@@ -99,7 +99,7 @@
         <section id="secDashboard" class="hidden space-y-5">
             <div class="card-glass p-6 rounded-3xl relative overflow-hidden glow-purple">
                 <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-purple-600/10 rounded-full blur-2xl"></div>
-                <span class="text-xs text-slate-400 font-medium uppercase tracking-wider">Seu Saldo Disponível</span>
+                <span class="text-xs text-slate-400 font-medium uppercase tracking-wider">Seu Saldo Principal</span>
                 <div class="flex items-baseline gap-1 mt-2">
                     <span class="text-2xl font-bold text-purple-400">R$</span>
                     <span id="txtSaldo" class="text-4xl font-extrabold tracking-tight">0,00</span>
@@ -111,15 +111,20 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="abrirModalPagamento()" class="py-4 px-4 bg-purple-600 hover:bg-purple-500 rounded-2xl font-bold text-sm transition shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 text-white">
-                    <i class="fa-solid fa-paper-plane text-lg"></i>
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="abrirModalPagamento('conta')" class="py-3 px-2 bg-purple-600 hover:bg-purple-500 rounded-2xl font-bold text-xs transition shadow-lg shadow-purple-600/30 flex flex-col items-center justify-center gap-1 text-white">
+                    <i class="fa-solid fa-paper-plane text-base"></i>
                     <span>Pagar</span>
                 </button>
 
-                <button onclick="gerarCodigoRecebimento()" class="py-4 px-4 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-2xl font-bold text-sm transition flex items-center justify-center gap-2 text-purple-300">
-                    <i class="fa-solid fa-qrcode text-lg"></i>
-                    <span>Receber / QR Code</span>
+                <button onclick="gerarCodigoRecebimento()" class="py-3 px-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-2xl font-bold text-xs transition flex flex-col items-center justify-center gap-1 text-purple-300">
+                    <i class="fa-solid fa-qrcode text-base"></i>
+                    <span>Receber</span>
+                </button>
+
+                <button onclick="abrirModalMeuCartao()" class="py-3 px-2 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 rounded-2xl font-bold text-xs transition flex flex-col items-center justify-center gap-1 text-white shadow-lg shadow-pink-600/20">
+                    <i class="fa-solid fa-credit-card text-base"></i>
+                    <span>Meu Cartão</span>
                 </button>
             </div>
 
@@ -138,6 +143,66 @@
 
     </main>
 
+    <!-- MODAL MEU CARTÃO -->
+    <div id="modalMeuCartao" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="card-glass max-w-sm w-full p-6 rounded-3xl relative space-y-4 text-center">
+            <button onclick="fecharModalMeuCartao()" class="absolute top-4 right-4 w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-400">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h3 class="text-lg font-bold text-slate-100 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-credit-card text-pink-400"></i> Meu Cartão Virtual
+            </h3>
+
+            <!-- IMAGEM DO CARTÃO -->
+            <div class="relative group">
+                <img src="https://cdn.phototourl.com/free/2026-09-22-4d4ecf1b-b7d4-42f0-bbfb-772205e2b361.png" alt="Cartão Virtual" class="w-full rounded-2xl shadow-2xl border border-purple-500/30 object-cover transform transition group-hover:scale-105">
+            </div>
+
+            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+                <span class="text-[11px] text-slate-400 block font-medium">Saldo Atual no Cartão:</span>
+                <span class="text-2xl font-extrabold text-pink-400">R$ <span id="txtSaldoCartao">0,00</span></span>
+            </div>
+
+            <p class="text-xs text-slate-300 font-medium">Este é o seu cartão. Aperte em um dos botões abaixo.</p>
+
+            <div class="space-y-2">
+                <button onclick="abrirModalRecarregarCartao()" class="w-full py-3 bg-purple-600 hover:bg-purple-500 font-bold rounded-xl text-xs transition flex items-center justify-center gap-2 text-white">
+                    <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                    <span>Enviar dinheiro para o cartão</span>
+                </button>
+
+                <button onclick="abrirModalPagamento('cartao')" class="w-full py-3 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 font-bold rounded-xl text-xs transition flex items-center justify-center gap-2 text-white shadow-lg">
+                    <i class="fa-solid fa-qrcode"></i>
+                    <span>Escanear QR Code com o Cartão</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL RECARREGAR CARTÃO -->
+    <div id="modalRecarregar" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="card-glass max-w-xs w-full p-5 rounded-3xl relative space-y-3">
+            <button onclick="fecharModalRecarregar()" class="absolute top-4 right-4 w-7 h-7 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-400 text-xs">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h4 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-wallet text-purple-400"></i> Transferir para o Cartão
+            </h4>
+            <p class="text-[11px] text-slate-400">Transfira saldo da sua conta principal para o seu cartão.</p>
+
+            <div>
+                <label class="block text-xs text-slate-300 mb-1">Valor (R$)</label>
+                <input type="number" step="0.01" min="0.01" id="valTransferirCartao" placeholder="0.00" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-3 text-sm focus:outline-none focus:border-purple-500">
+            </div>
+
+            <button onclick="confirmarRecargaCartao()" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 font-bold rounded-xl text-xs transition">
+                Confirmar Transferência
+            </button>
+        </div>
+    </div>
+
     <!-- MODAL DE PAGAMENTO -->
     <div id="modalPagamento" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="card-glass max-w-md w-full p-6 rounded-3xl relative space-y-4">
@@ -146,7 +211,7 @@
             </button>
 
             <h3 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-                <i class="fa-solid fa-wallet text-purple-400"></i> Área de Pagamento
+                <i class="fa-solid fa-wallet text-purple-400"></i> Área de Pagamento <span id="badgeFontePagamento" class="text-xs bg-purple-900/60 text-purple-300 px-2 py-0.5 rounded-full border border-purple-700">Conta</span>
             </h3>
 
             <div class="flex bg-slate-900/80 p-1 rounded-xl border border-slate-800">
@@ -212,7 +277,7 @@
     </div>
 
 
-    <!-- MODAL DE RECEBER (QR CODE) COM NOTIFICAÇÃO EM TEMPO REAL -->
+    <!-- MODAL DE RECEBER (QR CODE) -->
     <div id="modalReceber" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="card-glass max-w-sm w-full p-6 rounded-3xl text-center relative space-y-4">
             <button onclick="fecharModalReceber()" class="absolute top-4 right-4 w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-400">
@@ -222,7 +287,6 @@
             <h3 class="text-lg font-bold text-slate-100">Receber por Aproximação</h3>
             <p class="text-xs text-slate-400">Mostre este QR Code para a pessoa escanear ou informe o código abaixo.</p>
 
-            <!-- AVISO EM TEMPO REAL QUANDO ALGUÉM ESCANEAR -->
             <div id="statusScanBox" class="hidden p-3 bg-amber-500/20 border border-amber-500/50 rounded-xl text-xs text-amber-300 font-bold animate-pulse flex items-center justify-center gap-2">
                 <i class="fa-solid fa-eye text-base"></i>
                 <span id="txtStatusScan">Uma pessoa escaneou o QR code!</span>
@@ -306,6 +370,7 @@
         const db = getFirestore(app);
 
         let modoAuth = 'login';
+        let fontePagamentoAtual = 'conta'; // 'conta' ou 'cartao'
         let unsubscribeUser = null;
         let unsubscribeHist = null;
         let unsubscribeCodeMonitor = null;
@@ -337,8 +402,9 @@
                     if (docSnap.exists()) {
                         const data = docSnap.data();
                         document.getElementById('txtSaldo').innerText = (data.balance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+                        document.getElementById('txtSaldoCartao').innerText = (data.cardBalance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                     } else {
-                        setDoc(userRef, { email: user.email, balance: 0.00 });
+                        setDoc(userRef, { email: user.email, balance: 0.00, cardBalance: 0.00 });
                     }
                 });
 
@@ -349,7 +415,7 @@
                     sessionStorage.removeItem('pending_pay_code');
                     document.getElementById('alertPendingCode').classList.add('hidden');
                     setTimeout(() => {
-                        abrirModalPagamento();
+                        abrirModalPagamento('conta');
                         mudarAbaPagamento('aproximacao');
                         document.getElementById('inputProxCodigo').value = pendingCode;
                         buscarCodigoAproximacao(pendingCode);
@@ -399,6 +465,7 @@
                     await setDoc(doc(db, "users", userCred.user.uid), {
                         email: email,
                         balance: 0.00,
+                        cardBalance: 0.00,
                         createdAt: serverTimestamp()
                     });
                     await sendEmailVerification(userCred.user);
@@ -415,7 +482,58 @@
 
         window.fazerLogout = () => signOut(auth);
 
-        // 4. RECEBER / GERAR QR CODE COM MONITOR EM TEMPO REAL
+        // 4. MEU CARTÃO & RECARGA
+        window.abrirModalMeuCartao = () => {
+            document.getElementById('modalMeuCartao').classList.remove('hidden');
+        };
+
+        window.fecharModalMeuCartao = () => {
+            document.getElementById('modalMeuCartao').classList.add('hidden');
+        };
+
+        window.abrirModalRecarregarCartao = () => {
+            document.getElementById('modalRecarregar').classList.remove('hidden');
+        };
+
+        window.fecharModalRecarregar = () => {
+            document.getElementById('modalRecarregar').classList.add('hidden');
+        };
+
+        window.confirmarRecargaCartao = async () => {
+            const val = parseFloat(document.getElementById('valTransferirCartao').value);
+            if (isNaN(val) || val <= 0) return alert("Digite um valor válido para recarga!");
+
+            const userUid = auth.currentUser.uid;
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const userRef = doc(db, "users", userUid);
+                    const userSnap = await transaction.get(userRef);
+
+                    if (!userSnap.exists()) throw new Error("Usuário não encontrado!");
+
+                    const data = userSnap.data();
+                    const saldoAtual = data.balance || 0;
+                    const saldoCartaoAtual = data.cardBalance || 0;
+
+                    if (saldoAtual < val) {
+                        throw new Error("erro, você não tem dinheiro na conta.");
+                    }
+
+                    transaction.update(userRef, {
+                        balance: saldoAtual - val,
+                        cardBalance: saldoCartaoAtual + val
+                    });
+                });
+
+                alert(`R$ ${val.toLocaleString('pt-BR', {minimumFractionDigits: 2})} adicionados ao seu cartão!`);
+                fecharModalRecarregar();
+                document.getElementById('valTransferirCartao').value = "";
+            } catch (err) {
+                alert("Erro ao recarregar: " + err.message);
+            }
+        };
+
+        // 5. RECEBER / GERAR QR CODE COM MONITOR EM TEMPO REAL
         window.gerarCodigoRecebimento = async () => {
             const user = auth.currentUser;
             if (!user) return;
@@ -438,7 +556,6 @@
             document.getElementById('statusScanBox').classList.add('hidden');
             document.getElementById('modalReceber').classList.remove('hidden');
 
-            // ESCUTAR EM TEMPO REAL SE ALGUÉM ESCANEOU OU PAGOU ESTE CÓDIGO!
             if (unsubscribeCodeMonitor) unsubscribeCodeMonitor();
             unsubscribeCodeMonitor = onSnapshot(doc(db, "proximity_codes", docRef.id), (snap) => {
                 if (snap.exists()) {
@@ -461,8 +578,19 @@
             if (unsubscribeCodeMonitor) unsubscribeCodeMonitor();
         };
 
-        // 5. MODAL DE PAGAMENTO
-        window.abrirModalPagamento = () => {
+        // 6. MODAL DE PAGAMENTO
+        window.abrirModalPagamento = (fonte = 'conta') => {
+            fontePagamentoAtual = fonte;
+            const badge = document.getElementById('badgeFontePagamento');
+            if (fonte === 'cartao') {
+                badge.innerText = "Pagar com o Cartão";
+                badge.className = "text-xs bg-pink-900/60 text-pink-300 px-2 py-0.5 rounded-full border border-pink-700 font-bold";
+                fecharModalMeuCartao();
+            } else {
+                badge.innerText = "Pagar com a Conta";
+                badge.className = "text-xs bg-purple-900/60 text-purple-300 px-2 py-0.5 rounded-full border border-purple-700 font-bold";
+            }
+
             document.getElementById('modalPagamento').classList.remove('hidden');
             document.getElementById('msgPayError').classList.add('hidden');
         };
@@ -492,7 +620,7 @@
             }
         };
 
-        // 6. BUSCAR E NOTIFICAR ESCANEAMENTO DE CÓDIGO
+        // 7. BUSCAR E NOTIFICAR ESCANEAMENTO DE CÓDIGO
         window.buscarCodigoAproximacao = async (forcedCode = null) => {
             const code = forcedCode || document.getElementById('inputProxCodigo').value.trim();
             const errDiv = document.getElementById('msgPayError');
@@ -523,7 +651,6 @@
                     return;
                 }
 
-                // Avisa o remetente no banco de dados que a pessoa escaneou!
                 await updateDoc(doc(db, "proximity_codes", docSnap.id), {
                     status: 'scanned',
                     scannedBy: auth.currentUser.email
@@ -544,7 +671,7 @@
             }
         };
 
-        // 7. CÂMERA SCANNER
+        // 8. CÂMERA SCANNER
         window.iniciarCameraScanner = async () => {
             const boxCam = document.getElementById('boxCameraScanner');
             boxCam.classList.remove('hidden');
@@ -587,7 +714,7 @@
             }
         };
 
-        // 8. EXECUTAR PAGAMENTOS COM VERIFICAÇÃO DE SALDO E PROCESSANDO
+        // 9. EXECUTAR PAGAMENTOS (DO SALDO DA CONTA OU DO CARTÃO)
         window.iniciarTransferenciaEmail = async () => {
             const email = document.getElementById('payDestEmail').value.trim();
             const val = parseFloat(document.getElementById('payValEmail').value);
@@ -615,11 +742,9 @@
 
             if (senderUid === destUid) return alert("Você não pode pagar a si mesmo!");
 
-            // Exibe a tela de processamento
             fecharModalPagamento();
             document.getElementById('modalProcessando').classList.remove('hidden');
 
-            // Simula um tempo de carregamento para efeito visual
             await new Promise(resolve => setTimeout(resolve, 1200));
 
             try {
@@ -633,14 +758,25 @@
                     if (!senderSnap.exists()) throw new Error("Sua conta não foi encontrada.");
                     if (!destSnap.exists()) throw new Error("Conta do destinatário não encontrada.");
 
-                    const senderBalance = senderSnap.data().balance || 0;
-                    
-                    // VERIFICAÇÃO DE SALDO INSUFICIENTE
-                    if (senderBalance < valor) {
-                        throw new Error("erro, você não tem dinheiro na conta.");
+                    const senderData = senderSnap.data();
+
+                    if (fontePagamentoAtual === 'cartao') {
+                        // DEBITAR DO CARTÃO
+                        const cardBal = senderData.cardBalance || 0;
+                        if (cardBal < valor) {
+                            throw new Error("erro, você não tem dinheiro no cartão.");
+                        }
+                        transaction.update(senderRef, { cardBalance: cardBal - valor });
+                    } else {
+                        // DEBITAR DA CONTA PRINCIPAL
+                        const senderBalance = senderData.balance || 0;
+                        if (senderBalance < valor) {
+                            throw new Error("erro, você não tem dinheiro na conta.");
+                        }
+                        transaction.update(senderRef, { balance: senderBalance - valor });
                     }
 
-                    transaction.update(senderRef, { balance: senderBalance - valor });
+                    // ACREDITAR NO DESTINATÁRIO (SEMPRE NA CONTA PRINCIPAL DELE)
                     transaction.update(destRef, { balance: (destSnap.data().balance || 0) + valor });
 
                     if (proxDocId) {
@@ -658,13 +794,13 @@
                         destUid,
                         destEmail,
                         value: valor,
+                        paymentSource: fontePagamentoAtual,
                         timestamp: serverTimestamp()
                     });
                 });
 
                 document.getElementById('modalProcessando').classList.add('hidden');
                 
-                // Exibe o Comprovante "Pago!"
                 document.getElementById('compPara').innerText = destEmail;
                 document.getElementById('compValor').innerText = "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                 document.getElementById('compData').innerText = new Date().toLocaleString('pt-BR');
@@ -673,8 +809,7 @@
             } catch (err) {
                 document.getElementById('modalProcessando').classList.add('hidden');
                 
-                // Reabre a modal com a mensagem exata de erro
-                abrirModalPagamento();
+                abrirModalPagamento(fontePagamentoAtual);
                 errDiv.innerText = err.message;
                 errDiv.classList.remove('hidden');
             }
@@ -682,7 +817,7 @@
 
         window.fecharModalComprovante = () => document.getElementById('modalComprovante').classList.add('hidden');
 
-        // 9. CARREGAR HISTÓRICO
+        // 10. CARREGAR HISTÓRICO
         function carregarHistorico(uid) {
             const q = query(
                 collection(db, "transactions"), 
@@ -703,6 +838,7 @@
                 snap.forEach((docSnap) => {
                     const data = docSnap.data();
                     const souEnviador = data.senderUid === uid;
+                    const origemText = data.paymentSource === 'cartao' ? ' (pelo Cartão)' : '';
 
                     if (souEnviador) {
                         totalGasto += data.value || 0;
@@ -714,7 +850,7 @@
                                     </div>
                                     <div>
                                         <span class="font-bold text-slate-200 block text-xs">${data.destEmail}</span>
-                                        <span class="text-[10px] text-slate-400">Pix Enviado</span>
+                                        <span class="text-[10px] text-slate-400">Pix Enviado${origemText}</span>
                                     </div>
                                 </div>
                                 <span class="font-bold text-rose-400 text-xs">- R$ ${data.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
