@@ -1,1398 +1,948 @@
 ```html
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ventilador Pay</title>
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <!-- Google Fonts Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            nu: {
-              purple: '#820AD1',
-              darkPurple: '#5f0799',
-              lightPurple: '#f1e5f9',
-              bgDark: '#0f0f12',
-              cardDark: '#1a1a21',
-              cardHoverDark: '#252530',
-              textMuted: '#a1a1aa'
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventilador Pay - Carteira Digital</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eefbfb',
+                            100: '#d5f7f7',
+                            400: '#22d3ee',
+                            500: '#06b6d4',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            accent: '#10b981',
+                            accentHover: '#059669',
+                            dark: '#0b0f19',
+                            card: '#131b2e',
+                            input: '#1d283d'
+                        }
+                    },
+                    animation: {
+                        'spin-slow': 'spin 8s linear infinite',
+                        'spin-fast': 'spin 1s linear infinite',
+                        'pulse-glow': 'pulseGlow 2s infinite',
+                        'float': 'float 3s ease-in-out infinite'
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 15px rgba(6, 182, 212, 0.4)' },
+                            '50%': { boxShadow: '0 0 30px rgba(16, 185, 129, 0.7)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-6px)' }
+                        }
+                    }
+                }
             }
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif']
-          }
         }
-      }
-    }
-  </script>
+    </script>
 
-  <style>
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #0f0f12;
-      color: #ffffff;
-      -webkit-tap-highlight-color: transparent;
-    }
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    /* Scrollbar estilizada */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #1a1a21;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #820AD1;
-      border-radius: 4px;
-    }
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    .nu-glass {
-      background: rgba(26, 26, 33, 0.85);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
+    <!-- QRCode Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-    .pulse-animation {
-      animation: pulseGlow 2s infinite ease-in-out;
-    }
-
-    @keyframes pulseGlow {
-      0%, 100% {
-        box-shadow: 0 0 15px rgba(130, 10, 209, 0.4);
-        transform: scale(1);
-      }
-      50% {
-        box-shadow: 0 0 30px rgba(130, 10, 209, 0.8);
-        transform: scale(1.02);
-      }
-    }
-
-    .rotate-fan {
-      animation: spinFan 6s linear infinite;
-    }
-
-    @keyframes spinFan {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-  </style>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #080c14;
+            color: #f1f5f9;
+        }
+        .glass-card {
+            background: rgba(19, 27, 46, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-input {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        .glass-input:focus {
+            border-color: #06b6d4;
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+    </style>
 </head>
-<body class="bg-[#0f0f12] text-white min-h-screen flex flex-col justify-between selection:bg-[#820AD1] selection:text-white">
+<body class="min-h-screen flex flex-col justify-between items-center p-2 sm:p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
 
-  <!-- App Wrapper Container -->
-  <div id="app" class="max-w-md w-full mx-auto min-h-screen flex flex-col justify-between relative pb-8">
-    
-    <!-- Top Toast Notification System -->
-    <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-sm px-4 pointer-events-none"></div>
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full px-4 pointer-events-none"></div>
 
-    <!-- MAIN VIEW CONTAINER -->
-    <main id="main-content" class="flex-1 flex flex-col">
-      <!-- Loading Initial State -->
-      <div id="loading-screen" class="flex-1 flex flex-col items-center justify-center p-6 text-center">
-        <div class="w-16 h-16 rounded-full bg-[#820AD1]/20 flex items-center justify-center mb-4 text-[#820AD1] text-3xl pulse-animation">
-          <i class="fa-solid fa-fan rotate-fan"></i>
-        </div>
-        <h1 class="text-xl font-bold tracking-wide">Ventilador Pay</h1>
-        <p class="text-xs text-nu-textMuted mt-1">Carregando seus dados com segurança...</p>
-      </div>
+    <!-- App Wrapper (Mobile First Container) -->
+    <main class="w-full max-w-md mx-auto my-auto relative">
 
-      <!-- AUTH VIEWS CONTAINER -->
-      <div id="auth-views" class="hidden flex-1 flex flex-col justify-center p-6">
-        
-        <!-- HEADER LOGO -->
-        <div class="text-center mb-8">
-          <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#820AD1] text-white shadow-lg shadow-[#820AD1]/30 mb-3">
-            <i class="fa-solid fa-fan text-3xl rotate-fan"></i>
-          </div>
-          <h1 class="text-2xl font-extrabold tracking-tight">Ventilador Pay</h1>
-          <p class="text-xs text-nu-textMuted mt-1">O seu banco digital simples, moderno e seguro</p>
-        </div>
+        <!-- ==================== TELA 1: AUTHENTICATION (LOGIN / REGISTRO) ==================== -->
+        <section id="screen-auth" class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            <!-- Background Decorative Ambient Light -->
+            <div class="absolute -top-20 -right-20 w-48 h-48 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
-        <!-- 1. LOGIN FORM -->
-        <div id="view-login" class="space-y-4">
-          <div class="bg-nu-cardDark p-6 rounded-3xl border border-white/5 shadow-xl space-y-4">
-            <h2 class="text-lg font-bold text-white mb-2">Acessar sua conta</h2>
-            
+            <!-- Logo Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-emerald-400 p-0.5 shadow-lg shadow-cyan-500/20 mb-3 animate-float">
+                    <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                        <i class="fa-solid fa-fan text-3xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400 animate-spin-slow"></i>
+                    </div>
+                </div>
+                <h1 class="text-2xl font-extrabold text-white tracking-tight">Ventilador <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">Pay</span></h1>
+                <p class="text-xs text-slate-400 mt-1">Sua carteira digital ultra rápida</p>
+            </div>
+
+            <!-- Auth Tabs Switcher -->
+            <div class="flex p-1 bg-slate-900/80 rounded-xl mb-6 border border-slate-800">
+                <button id="tab-login-btn" onclick="switchAuthTab('login')" class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-white bg-slate-800 shadow">Entrar</button>
+                <button id="tab-register-btn" onclick="switchAuthTab('register')" class="flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white">Criar Conta</button>
+            </div>
+
+            <!-- Auth Forms -->
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <!-- E-mail Field -->
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1.5" for="auth-email">Endereço de E-mail</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                            <i class="fa-regular fa-envelope"></i>
+                        </span>
+                        <input type="email" id="auth-email" required placeholder="seuemail@exemplo.com" class="w-full pl-10 pr-4 py-3 text-sm glass-input rounded-xl text-white placeholder-slate-500 outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1.5" for="auth-password">Senha de Acesso</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <input type="password" id="auth-password" required minlength="6" placeholder="••••••••" class="w-full pl-10 pr-4 py-3 text-sm glass-input rounded-xl text-white placeholder-slate-500 outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Alert Box for Verification Email Sent -->
+                <div id="register-verify-info" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-start gap-2.5">
+                    <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 shrink-0"></i>
+                    <div>
+                        <strong class="font-semibold block">E-mail de verificação enviado!</strong>
+                        Acesse sua caixa de entrada e clique no link de confirmação para ativar sua conta.
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="auth-submit-btn" class="w-full py-3.5 px-4 rounded-xl font-bold text-slate-950 bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 hover:opacity-95 transition shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-2 mt-2">
+                    <span id="auth-btn-text">Acessar Conta</span>
+                    <i id="auth-btn-spinner" class="fa-solid fa-spinner animate-spin hidden"></i>
+                </button>
+            </form>
+        </section>
+
+        <!-- ==================== TELA 2: DASHBOARD (TELA INICIAL) ==================== -->
+        <section id="screen-dashboard" class="hidden space-y-5">
+            <!-- Top Bar / User Profile -->
+            <div class="flex items-center justify-between glass-card p-4 rounded-2xl">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-emerald-400 flex items-center justify-center font-bold text-slate-950 text-sm shadow">
+                        <span id="user-avatar-initials">VP</span>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 font-medium">Bem-vindo(a),</p>
+                        <p id="user-email-display" class="text-xs font-bold text-slate-100 truncate max-w-[170px] sm:max-w-[220px]">usuario@email.com</p>
+                    </div>
+                </div>
+                <button onclick="handleLogout()" title="Sair da Conta" class="w-9 h-9 rounded-xl bg-slate-800/80 hover:bg-rose-500/20 hover:text-rose-400 text-slate-400 transition flex items-center justify-center border border-slate-700/50">
+                    <i class="fa-solid fa-right-from-bracket text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Email Unverified Banner (if applicable) -->
+            <div id="email-verification-banner" class="hidden p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400 text-sm"></i>
+                    <span>Verifique seu e-mail de cadastro</span>
+                </div>
+                <button onclick="resendVerificationEmail()" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 font-medium text-[11px] transition">
+                    Reenviar
+                </button>
+            </div>
+
+            <!-- Balance Card -->
+            <div class="glass-card rounded-3xl p-6 relative overflow-hidden border border-cyan-500/20 shadow-xl">
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-gradient-to-br from-cyan-500/10 to-emerald-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Saldo Disponível</span>
+                    <button onclick="toggleBalanceVisibility()" class="text-slate-400 hover:text-white transition p-1" title="Ocultar/Mostrar Saldo">
+                        <i id="balance-eye-icon" class="fa-solid fa-eye text-sm"></i>
+                    </button>
+                </div>
+
+                <div class="flex items-baseline gap-1 my-2">
+                    <span class="text-lg font-bold text-cyan-400">R$</span>
+                    <h2 id="balance-amount" class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">0,00</h2>
+                </div>
+
+                <!-- Demo Balance Helper Button -->
+                <div class="mt-4 pt-4 border-t border-slate-800 flex items-center justify-between">
+                    <span class="text-[11px] text-slate-400">Precisando testar envios?</span>
+                    <button onclick="addTestBalance()" class="px-3 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus-circle text-xs"></i>
+                        + R$ 100,00 Teste
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Pay Action Button (Big & Highlighted) -->
             <div>
-              <label class="block text-xs text-nu-textMuted font-medium mb-1">E-mail</label>
-              <div class="relative">
-                <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-nu-textMuted"></i>
-                <input type="email" id="login-email" placeholder="seuemail@exemplo.com" class="w-full bg-[#111116] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-[#820AD1] transition" />
-              </div>
+                <button onclick="openPayModal()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400 hover:opacity-95 text-slate-950 font-black text-lg tracking-wide shadow-xl shadow-cyan-500/20 animate-pulse-glow flex items-center justify-center gap-3 transition transform active:scale-98">
+                    <i class="fa-solid fa-paper-plane text-xl"></i>
+                    <span>PAGAR AGORA</span>
+                </button>
             </div>
 
-            <div>
-              <label class="block text-xs text-nu-textMuted font-medium mb-1">Senha</label>
-              <div class="relative">
-                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-nu-textMuted"></i>
-                <input type="password" id="login-password" placeholder="••••••••" class="w-full bg-[#111116] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-[#820AD1] transition" />
-              </div>
+            <!-- Transaction History Extrato -->
+            <div class="glass-card rounded-3xl p-5 space-y-4 border border-slate-800">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-cyan-400"></i>
+                        Atividades Recentes
+                    </h3>
+                    <span class="text-[11px] text-slate-400" id="tx-count">0 transações</span>
+                </div>
+
+                <div id="transactions-list" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+                    <!-- Dynamic transactions inserted here -->
+                    <div class="text-center py-8 text-slate-500 text-xs">
+                        <i class="fa-solid fa-receipt text-2xl mb-2 opacity-50 block"></i>
+                        Nenhuma transação realizada ainda.
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <button id="btn-login" class="w-full bg-[#820AD1] hover:bg-[#5f0799] text-white font-semibold py-3.5 rounded-xl text-sm transition shadow-lg shadow-[#820AD1]/20 active:scale-[0.98]">
-              Entrar
-            </button>
-          </div>
+        <!-- ==================== TELA 3: MODAL DE PAGAMENTO & APROXIMAÇÃO ==================== -->
+        <div id="modal-pay" class="fixed inset-0 z-40 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+            <div class="glass-card w-full max-w-md rounded-3xl p-6 shadow-2xl border border-slate-700/60 relative animate-float">
+                <!-- Close Button -->
+                <button onclick="closePayModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
 
-          <!-- Auth Navigation Links -->
-          <div class="text-center space-y-3 pt-2">
-            <p>
-              <button id="link-go-signup" class="text-xs text-nu-textMuted hover:text-white transition underline underline-offset-4">
-                Se não tem conta, aperte aqui
-              </button>
-            </p>
-            <p>
-              <button id="link-go-forgot" class="text-xs text-[#820AD1] hover:text-[#a842f4] transition font-medium">
-                Esqueceu a senha?
-              </button>
-            </p>
-          </div>
+                <h3 class="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                    <i class="fa-solid fa-wallet text-cyan-400"></i>
+                    Opções de Pagamento
+                </h3>
+                <p class="text-xs text-slate-400 mb-5">Escolha como deseja transferir seu saldo</p>
+
+                <!-- Payment Method Sub-Tabs -->
+                <div class="flex p-1 bg-slate-900 rounded-xl mb-5 border border-slate-800">
+                    <button id="pay-tab-email-btn" onclick="switchPaySubTab('email')" class="flex-1 py-2 text-xs font-semibold rounded-lg transition-all text-white bg-slate-800 shadow">
+                        <i class="fa-solid fa-at mr-1"></i> Por E-mail
+                    </button>
+                    <button id="pay-tab-code-btn" onclick="switchPaySubTab('code')" class="flex-1 py-2 text-xs font-semibold rounded-lg transition-all text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-wifi mr-1"></i> Aproximação
+                    </button>
+                </div>
+
+                <!-- OPTION A: TRANSFER BY EMAIL -->
+                <form id="pay-email-form" onsubmit="handlePayByEmail(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">E-mail do Destinatário</label>
+                        <input type="email" id="pay-email-input" required placeholder="amigo@email.com" class="w-full px-4 py-3 text-sm glass-input rounded-xl text-white placeholder-slate-500 outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Valor a Transferir (R$)</label>
+                        <input type="number" id="pay-email-amount" required step="0.01" min="0.01" placeholder="0,00" class="w-full px-4 py-3 text-sm glass-input rounded-xl text-white placeholder-slate-500 outline-none">
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 px-4 rounded-xl font-bold text-slate-950 bg-gradient-to-r from-cyan-400 to-emerald-400 hover:opacity-95 transition shadow-lg shadow-cyan-500/20">
+                        Confirmar Transferência
+                    </button>
+                </form>
+
+                <!-- OPTION B: PROXIMITY (APROXIMAÇÃO) & CODE -->
+                <div id="pay-code-panel" class="hidden space-y-5">
+                    <!-- User's Own Approximation Code & QR -->
+                    <div class="bg-slate-900/90 rounded-2xl p-4 border border-cyan-500/30 text-center space-y-3">
+                        <span class="text-[11px] font-semibold text-cyan-400 uppercase tracking-wider block">Seu Código de Aproximação</span>
+                        
+                        <div class="flex items-center justify-center gap-2">
+                            <span id="my-proximity-code" class="text-2xl font-mono font-black tracking-widest text-white bg-slate-950 px-4 py-1.5 rounded-xl border border-slate-800">
+                                ------
+                            </span>
+                            <button onclick="copyProximityCode()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium transition" title="Copiar código">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                        </div>
+
+                        <!-- QR Code Canvas Container -->
+                        <div class="flex justify-center my-2">
+                            <div id="qrcode-container" class="p-2 bg-white rounded-xl shadow-lg"></div>
+                        </div>
+
+                        <p class="text-[11px] text-slate-400">Mostre o código ou QR Code para quem vai te pagar.</p>
+                    </div>
+
+                    <!-- Button to switch into entering another user's code -->
+                    <div class="pt-2 border-t border-slate-800">
+                        <button type="button" onclick="togglePayViaCodeForm()" class="w-full py-3 px-4 rounded-xl font-bold text-cyan-300 bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-qrcode"></i>
+                            <span>Pagar via Código de Outra Pessoa</span>
+                        </button>
+                    </div>
+
+                    <!-- Hidden Form for Paying via Code -->
+                    <form id="pay-via-code-form" onsubmit="handlePayByCode(event)" class="hidden space-y-3 pt-2 border-t border-slate-800 animate-fadeIn">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Digite o Código (6 dígitos)</label>
+                            <input type="text" id="pay-target-code" maxlength="6" required placeholder="123456" class="w-full px-4 py-2.5 text-center font-mono text-lg tracking-widest glass-input rounded-xl text-white outline-none uppercase">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">Preço / Valor (R$)</label>
+                            <input type="number" id="pay-code-amount" required step="0.01" min="0.01" placeholder="0,00" class="w-full px-4 py-2.5 text-sm glass-input rounded-xl text-white outline-none">
+                        </div>
+
+                        <button type="submit" class="w-full py-3 px-4 rounded-xl font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-cyan-400 hover:opacity-95 transition shadow-lg">
+                            Pagar com Código
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
 
-        <!-- 2. REGISTER FORM -->
-        <div id="view-signup" class="hidden space-y-4">
-          <div class="bg-nu-cardDark p-6 rounded-3xl border border-white/5 shadow-xl space-y-4">
-            <h2 class="text-lg font-bold text-white mb-1">Criar sua conta</h2>
-            <p class="text-xs text-nu-textMuted mb-2">Cadastre-se para aproveitar todos os recursos do Ventilador Pay.</p>
-
-            <div>
-              <label class="block text-xs text-nu-textMuted font-medium mb-1">E-mail</label>
-              <div class="relative">
-                <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-nu-textMuted"></i>
-                <input type="email" id="signup-email" placeholder="seuemail@exemplo.com" class="w-full bg-[#111116] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-[#820AD1] transition" />
-              </div>
+        <!-- ==================== TELA 4: CARREGANDO (PAGANDO...) ==================== -->
+        <div id="screen-loading" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-xl hidden flex flex-col items-center justify-center p-6 text-center">
+            <div class="relative w-28 h-28 mb-6 flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full border-4 border-cyan-500/20 border-t-cyan-400 border-r-emerald-400 animate-spin"></div>
+                <i class="fa-solid fa-fan text-4xl text-cyan-400 animate-spin-fast"></i>
             </div>
-
-            <div>
-              <label class="block text-xs text-nu-textMuted font-medium mb-1">Senha</label>
-              <div class="relative">
-                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-nu-textMuted"></i>
-                <input type="password" id="signup-password" placeholder="No mínimo 6 caracteres" class="w-full bg-[#111116] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-[#820AD1] transition" />
-              </div>
-            </div>
-
-            <button id="btn-signup" class="w-full bg-[#820AD1] hover:bg-[#5f0799] text-white font-semibold py-3.5 rounded-xl text-sm transition shadow-lg shadow-[#820AD1]/20 active:scale-[0.98]">
-              Criar Conta Grátis
-            </button>
-          </div>
-
-          <div class="text-center pt-2">
-            <button id="link-back-login-1" class="text-xs text-nu-textMuted hover:text-white transition underline underline-offset-4">
-              Já possui conta? Faça login aqui
-            </button>
-          </div>
+            <h3 class="text-xl font-extrabold text-white mb-2">Pagando...</h3>
+            <p class="text-xs text-slate-400 max-w-xs">Processando sua transferência com segurança no Ventilador Pay</p>
         </div>
 
-        <!-- 3. FORGOT PASSWORD FORM -->
-        <div id="view-forgot" class="hidden space-y-4">
-          <div class="bg-nu-cardDark p-6 rounded-3xl border border-white/5 shadow-xl space-y-4">
-            <h2 class="text-lg font-bold text-white mb-1">Recuperar Senha</h2>
-            <p class="text-xs text-nu-textMuted mb-2">Informe seu e-mail cadastrado e enviaremos um link para você redefinir sua senha.</p>
+        <!-- ==================== TELA 5: COMPROVANTE DE PAGAMENTO ==================== -->
+        <div id="screen-receipt" class="fixed inset-0 z-50 bg-slate-950 hidden flex items-center justify-center p-4 overflow-y-auto">
+            <div class="glass-card w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl border border-emerald-500/30 text-center space-y-6 my-auto">
+                <!-- Success Animated Badge -->
+                <div class="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/30 animate-bounce">
+                    <i class="fa-solid fa-check text-4xl text-emerald-400"></i>
+                </div>
 
-            <div>
-              <label class="block text-xs text-nu-textMuted font-medium mb-1">E-mail</label>
-              <div class="relative">
-                <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-nu-textMuted"></i>
-                <input type="email" id="forgot-email" placeholder="seuemail@exemplo.com" class="w-full bg-[#111116] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-[#820AD1] transition" />
-              </div>
+                <div>
+                    <span class="text-xs font-semibold text-emerald-400 uppercase tracking-widest block mb-1">Comprovante de Pagamento</span>
+                    <h2 class="text-2xl font-black text-white">Transferência Concluída!</h2>
+                </div>
+
+                <!-- Receipt Details Card -->
+                <div class="bg-slate-900/90 rounded-2xl p-4 border border-slate-800 text-left space-y-3 text-xs">
+                    <div class="flex justify-between items-center pb-2 border-b border-slate-800">
+                        <span class="text-slate-400">Valor Pago</span>
+                        <span id="receipt-amount" class="text-lg font-extrabold text-emerald-400">R$ 0,00</span>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Destinatário</span>
+                        <span id="receipt-recipient" class="font-semibold text-slate-200 truncate max-w-[180px]">---</span>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Data & Hora</span>
+                        <span id="receipt-date" class="font-medium text-slate-300">--/--/---- --:--</span>
+                    </div>
+
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">ID da Transação</span>
+                        <span id="receipt-txid" class="font-mono text-[10px] text-slate-400 bg-slate-950 px-2 py-1 rounded border border-slate-800">#000000</span>
+                    </div>
+                </div>
+
+                <!-- Back to Home Button -->
+                <button onclick="closeReceiptAndReturn()" class="w-full py-3.5 px-4 rounded-xl font-bold text-slate-950 bg-gradient-to-r from-cyan-400 via-teal-400 to-emerald-400 hover:opacity-95 transition shadow-lg shadow-cyan-500/20">
+                    Voltar para a Tela Inicial
+                </button>
             </div>
-
-            <button id="btn-forgot" class="w-full bg-[#820AD1] hover:bg-[#5f0799] text-white font-semibold py-3.5 rounded-xl text-sm transition shadow-lg shadow-[#820AD1]/20 active:scale-[0.98]">
-              Esqueceu a senha
-            </button>
-          </div>
-
-          <div class="text-center pt-2">
-            <button id="link-back-login-2" class="text-xs text-nu-textMuted hover:text-white transition underline underline-offset-4">
-              Voltar para o Login
-            </button>
-          </div>
         </div>
-
-      </div>
-
-      <!-- DASHBOARD VIEW -->
-      <div id="dashboard-view" class="hidden flex-1 flex flex-col">
-        
-        <!-- Header Nubank Style -->
-        <header class="bg-[#820AD1] p-6 pb-12 rounded-b-[2rem] shadow-lg relative">
-          <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-lg border border-white/20">
-                <i class="fa-solid fa-fan text-white rotate-fan"></i>
-              </div>
-              <span class="font-extrabold text-white text-lg tracking-wide">Ventilador Pay</span>
-            </div>
-            <div class="flex items-center space-x-2">
-              <button id="btn-toggle-balance" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" title="Ocultar/Mostrar Saldo">
-                <i id="eye-icon" class="fa-regular fa-eye"></i>
-              </button>
-              <button id="btn-logout" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" title="Sair da Conta">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-              </button>
-            </div>
-          </div>
-
-          <div class="space-y-1">
-            <p class="text-xs text-white/80 font-medium">Olá, <span id="user-greeting-email" class="font-semibold text-white">Usuário</span></p>
-            <p class="text-xs text-white/60">Conta Digital Ventilador Pay</p>
-          </div>
-        </header>
-
-        <!-- Balance Section Card (Overlapping header) -->
-        <div class="px-6 -mt-8">
-          <div class="bg-nu-cardDark p-6 rounded-3xl border border-white/10 shadow-2xl relative overflow-hidden">
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-xs font-medium text-nu-textMuted uppercase tracking-wider">Saldo disponível</span>
-              <span class="text-[10px] bg-[#820AD1]/20 text-[#a842f4] px-2 py-0.5 rounded-full font-semibold border border-[#820AD1]/30">Conta Verde</span>
-            </div>
-
-            <div class="my-2">
-              <h2 id="balance-display" class="text-3xl font-extrabold tracking-tight text-white">R$ 0,00</h2>
-              <p id="balance-hidden" class="hidden text-3xl font-extrabold tracking-tight text-white">R$ •••••</p>
-            </div>
-
-            <!-- Quick Action Test Deposit -->
-            <div class="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
-              <span class="text-xs text-nu-textMuted">Ambiente de Testes</span>
-              <button id="btn-add-test-balance" class="bg-[#820AD1]/20 hover:bg-[#820AD1]/40 text-[#a842f4] border border-[#820AD1]/40 text-xs font-semibold px-3 py-1.5 rounded-xl transition flex items-center gap-1.5">
-                <i class="fa-solid fa-plus text-xs"></i> Adicionar Saldo (Teste)
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick Action Buttons Nubank Style -->
-        <div class="p-6">
-          <h3 class="text-sm font-bold text-nu-textMuted mb-4 px-1">Ações rápidas</h3>
-          
-          <div class="grid grid-cols-4 gap-3">
-            
-            <!-- Pagar Button -->
-            <button id="btn-action-pay" class="flex flex-col items-center group">
-              <div class="w-14 h-14 rounded-full bg-[#820AD1] group-hover:bg-[#5f0799] text-white flex items-center justify-center text-xl shadow-lg shadow-[#820AD1]/30 transition transform active:scale-95 mb-2">
-                <i class="fa-solid fa-barcode"></i>
-              </div>
-              <span class="text-xs font-medium text-white group-hover:text-[#a842f4] transition">Pagar</span>
-            </button>
-
-            <!-- Empréstimo Button -->
-            <button id="btn-action-loan" class="flex flex-col items-center group">
-              <div class="w-14 h-14 rounded-full bg-nu-cardDark group-hover:bg-nu-cardHoverDark text-white flex items-center justify-center text-xl border border-white/10 transition transform active:scale-95 mb-2 relative">
-                <i class="fa-solid fa-hand-holding-dollar"></i>
-                <span class="absolute -top-1 -right-1 w-3 h-3 bg-amber-500 rounded-full border-2 border-[#0f0f12]"></span>
-              </div>
-              <span class="text-xs font-medium text-white group-hover:text-amber-400 transition">Empréstimo</span>
-            </button>
-
-            <!-- Pix Button (Illustrative) -->
-            <button class="btn-action-soon flex flex-col items-center group" data-feature="Pix">
-              <div class="w-14 h-14 rounded-full bg-nu-cardDark group-hover:bg-nu-cardHoverDark text-white flex items-center justify-center text-xl border border-white/10 transition transform active:scale-95 mb-2">
-                <i class="fa-brands fa-pix text-emerald-400"></i>
-              </div>
-              <span class="text-xs font-medium text-white transition">Pix</span>
-            </button>
-
-            <!-- Cartão Button (Illustrative) -->
-            <button class="btn-action-soon flex flex-col items-center group" data-feature="Cartões">
-              <div class="w-14 h-14 rounded-full bg-nu-cardDark group-hover:bg-nu-cardHoverDark text-white flex items-center justify-center text-xl border border-white/10 transition transform active:scale-95 mb-2">
-                <i class="fa-regular fa-credit-card"></i>
-              </div>
-              <span class="text-xs font-medium text-white transition">Cartão</span>
-            </button>
-
-            <!-- Transferir Button -->
-            <button class="btn-action-soon flex flex-col items-center group mt-2" data-feature="Transferência TED/DOC">
-              <div class="w-14 h-14 rounded-full bg-nu-cardDark group-hover:bg-nu-cardHoverDark text-white flex items-center justify-center text-xl border border-white/10 transition transform active:scale-95 mb-2">
-                <i class="fa-solid fa-money-bill-transfer"></i>
-              </div>
-              <span class="text-xs font-medium text-white transition">Transferir</span>
-            </button>
-
-            <!-- Recarga Button -->
-            <button class="btn-action-soon flex flex-col items-center group mt-2" data-feature="Recarga de Celular">
-              <div class="w-14 h-14 rounded-full bg-nu-cardDark group-hover:bg-nu-cardHoverDark text-white flex items-center justify-center text-xl border border-white/10 transition transform active:scale-95 mb-2">
-                <i class="fa-solid fa-mobile-screen-button"></i>
-              </div>
-              <span class="text-xs font-medium text-white transition">Recarga</span>
-            </button>
-
-            <!-- Seguros Button -->
-            <button class="btn-action-soon flex flex-col items-center group mt-2" data-feature="Seguros Ventilador Safe">
-              <div class="w-14 h-14 rounded-full bg-nu-cardDark group-hover:bg-nu-cardHoverDark text-white flex items-center justify-center text-xl border border-white/10 transition transform active:scale-95 mb-2">
-                <i class="fa-solid fa-shield-halved text-[#820AD1]"></i>
-              </div>
-              <span class="text-xs font-medium text-white transition">Seguros</span>
-            </button>
-
-            <!-- Caixinhas Button -->
-            <button class="btn-action-soon flex flex-col items-center group mt-2" data-feature="Caixinhas Rendimento">
-              <div class="w-14 h-14 rounded-full bg-nu-cardDark group-hover:bg-nu-cardHoverDark text-white flex items-center justify-center text-xl border border-white/10 transition transform active:scale-95 mb-2">
-                <i class="fa-solid fa-piggy-bank text-pink-400"></i>
-              </div>
-              <span class="text-xs font-medium text-white transition">Caixinhas</span>
-            </button>
-
-          </div>
-        </div>
-
-        <!-- Info Cards Carousel / List -->
-        <div class="p-6 pt-0 space-y-3">
-          <h3 class="text-sm font-bold text-nu-textMuted px-1">Novidades Ventilador Pay</h3>
-          
-          <div class="bg-nu-cardDark p-4 rounded-2xl border border-white/5 flex items-center space-x-4">
-            <div class="w-10 h-10 rounded-xl bg-[#820AD1]/20 text-[#a842f4] flex items-center justify-center text-lg flex-shrink-0">
-              <i class="fa-solid fa-shield-cat"></i>
-            </div>
-            <div>
-              <h4 class="text-xs font-bold text-white">Ventilador Safe Ativo</h4>
-              <p class="text-[11px] text-nu-textMuted mt-0.5">Suas transferências protegidas por análise de tempo de conta e padrões suspeitos.</p>
-            </div>
-          </div>
-
-          <div class="bg-nu-cardDark p-4 rounded-2xl border border-white/5 flex items-center space-x-4">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg flex-shrink-0">
-              <i class="fa-solid fa-wifi"></i>
-            </div>
-            <div>
-              <h4 class="text-xs font-bold text-white">Pagamento por Aproximação</h4>
-              <p class="text-[11px] text-nu-textMuted mt-0.5">Gere um código de 4 dígitos para receber ou pagar instantaneamente entre contas.</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
 
     </main>
 
-    <!-- MODALS CONTAINER -->
-    
-    <!-- 1. LOAN MAINTENANCE MODAL -->
-    <div id="modal-loan-maintenance" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-nu-cardDark border border-white/10 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl animate-fade-in">
-        <div class="w-14 h-14 bg-amber-500/20 text-amber-400 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4 border border-amber-500/30">
-          <i class="fa-solid fa-triangle-exclamation"></i>
-        </div>
-        <h3 class="text-lg font-bold text-white mb-2">Recurso em manutenção</h3>
-        <p class="text-xs text-nu-textMuted mb-6 leading-relaxed">
-          ⚠️ Recurso em manutenção. O serviço de empréstimos está indisponível no momento.
-        </p>
-        <button class="btn-close-modal w-full bg-[#820AD1] hover:bg-[#5f0799] text-white font-semibold py-3 rounded-xl text-sm transition">
-          Entendido
-        </button>
-      </div>
-    </div>
-
-    <!-- 2. SOON FEATURE MODAL -->
-    <div id="modal-soon" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-nu-cardDark border border-white/10 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl">
-        <div class="w-14 h-14 bg-[#820AD1]/20 text-[#a842f4] rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4 border border-[#820AD1]/30">
-          <i class="fa-solid fa-rocket"></i>
-        </div>
-        <h3 id="modal-soon-title" class="text-lg font-bold text-white mb-2">Em breve</h3>
-        <p class="text-xs text-nu-textMuted mb-6">
-          O recurso <span id="modal-soon-name" class="font-bold text-white"></span> está em fase final de testes e estará disponível em breve no Ventilador Pay!
-        </p>
-        <button class="btn-close-modal w-full bg-[#820AD1] hover:bg-[#5f0799] text-white font-semibold py-3 rounded-xl text-sm transition">
-          Ok, entendi
-        </button>
-      </div>
-    </div>
-
-    <!-- 3. ADD TEST BALANCE MODAL -->
-    <div id="modal-add-balance" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-nu-cardDark border border-white/10 rounded-3xl p-6 w-full max-w-sm text-left shadow-2xl">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-base font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-wallet text-[#820AD1]"></i> Adicionar Saldo de Teste
-          </h3>
-          <button class="btn-close-modal text-nu-textMuted hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-        </div>
-        
-        <p class="text-xs text-nu-textMuted mb-4">Escolha ou digite um valor simulado para depositar na sua conta Ventilador Pay:</p>
-
-        <div class="grid grid-cols-3 gap-2 mb-4">
-          <button class="btn-quick-deposit bg-white/5 hover:bg-[#820AD1]/30 border border-white/10 hover:border-[#820AD1] py-2 rounded-xl text-xs font-semibold text-white transition" data-amount="50">R$ 50,00</button>
-          <button class="btn-quick-deposit bg-white/5 hover:bg-[#820AD1]/30 border border-white/10 hover:border-[#820AD1] py-2 rounded-xl text-xs font-semibold text-white transition" data-amount="100">R$ 100,00</button>
-          <button class="btn-quick-deposit bg-white/5 hover:bg-[#820AD1]/30 border border-white/10 hover:border-[#820AD1] py-2 rounded-xl text-xs font-semibold text-white transition" data-amount="500">R$ 500,00</button>
-        </div>
-
-        <div>
-          <label class="block text-xs text-nu-textMuted mb-1">Outro valor (R$)</label>
-          <input type="number" id="input-custom-deposit" placeholder="0.00" min="1" step="0.01" class="w-full bg-[#111116] border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-[#820AD1] transition mb-4" />
-        </div>
-
-        <button id="btn-confirm-deposit" class="w-full bg-[#820AD1] hover:bg-[#5f0799] text-white font-semibold py-3 rounded-xl text-sm transition">
-          Confirmar Depósito
-        </button>
-      </div>
-    </div>
-
-    <!-- 4. MAIN PAYMENT MODAL (Pagar) -->
-    <div id="modal-pay-main" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-nu-cardDark border border-white/10 rounded-3xl p-6 w-full max-w-md text-left shadow-2xl flex flex-col max-h-[90vh]">
-        
-        <!-- Modal Header -->
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-bold text-white flex items-center gap-2">
-            <i class="fa-solid fa-receipt text-[#820AD1]"></i> Áreas de Pagamento
-          </h3>
-          <button class="btn-close-modal text-nu-textMuted hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-        </div>
-
-        <!-- Payment Tabs Header -->
-        <div class="flex bg-[#111116] p-1 rounded-xl border border-white/5 mb-4">
-          <button id="tab-pay-email" class="flex-1 py-2 text-xs font-semibold rounded-lg bg-[#820AD1] text-white transition flex items-center justify-center gap-2">
-            <i class="fa-regular fa-envelope"></i> Por E-mail
-          </button>
-          <button id="tab-pay-proximity" class="flex-1 py-2 text-xs font-semibold rounded-lg text-nu-textMuted hover:text-white transition flex items-center justify-center gap-2">
-            <i class="fa-solid fa-[#820AD1] fa-wifi"></i> Aproximação
-          </button>
-        </div>
-
-        <!-- TAB CONTENT 1: PAY BY EMAIL -->
-        <div id="content-pay-email" class="space-y-4">
-          <p class="text-xs text-nu-textMuted">Envie dinheiro instantaneamente para qualquer usuário cadastrado no Ventilador Pay.</p>
-          
-          <div>
-            <label class="block text-xs text-nu-textMuted mb-1 font-medium">E-mail do destinatário</label>
-            <div class="relative">
-              <i class="fa-solid fa-at absolute left-4 top-1/2 -translate-y-1/2 text-nu-textMuted"></i>
-              <input type="email" id="pay-email-input" placeholder="destinatario@exemplo.com" class="w-full bg-[#111116] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-[#820AD1] transition" />
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs text-nu-textMuted mb-1 font-medium">Valor a pagar (R$)</label>
-            <div class="relative">
-              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-nu-textMuted text-xs font-bold">R$</span>
-              <input type="number" id="pay-email-amount" placeholder="0.00" min="0.01" step="0.01" class="w-full bg-[#111116] border border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm text-white focus:outline-none focus:border-[#820AD1] transition" />
-            </div>
-          </div>
-
-          <button id="btn-submit-pay-email" class="w-full bg-[#820AD1] hover:bg-[#5f0799] text-white font-semibold py-3.5 rounded-xl text-sm transition shadow-lg shadow-[#820AD1]/20">
-            Continuar para Pagamento
-          </button>
-        </div>
-
-        <!-- TAB CONTENT 2: PROXIMITY PAYMENT -->
-        <div id="content-pay-proximity" class="hidden space-y-4">
-          <p class="text-xs text-nu-textMuted">Transfira de forma rápida por aproximação criando ou digitando um código de 4 dígitos.</p>
-
-          <div class="grid grid-cols-2 gap-3 pt-1">
-            <button id="btn-subtab-generate-code" class="bg-white/5 hover:bg-[#820AD1]/20 border border-white/10 hover:border-[#820AD1] p-4 rounded-2xl flex flex-col items-center text-center transition group">
-              <div class="w-10 h-10 rounded-full bg-[#820AD1]/20 text-[#a842f4] flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition">
-                <i class="fa-solid fa-qrcode"></i>
-              </div>
-              <span class="text-xs font-bold text-white mb-1">Gerar Código</span>
-              <span class="text-[10px] text-nu-textMuted">Receba pagamento de outra conta</span>
-            </button>
-
-            <button id="btn-subtab-scan-code" class="bg-white/5 hover:bg-[#820AD1]/20 border border-white/10 hover:border-[#820AD1] p-4 rounded-2xl flex flex-col items-center text-center transition group">
-              <div class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition">
-                <i class="fa-solid fa-barcode"></i>
-              </div>
-              <span class="text-xs font-bold text-white mb-1">Digitar Código</span>
-              <span class="text-[10px] text-nu-textMuted">Escanear código de aproximação</span>
-            </button>
-          </div>
-
-          <!-- Section: Scan/Type Proximity Code -->
-          <div id="section-scan-proximity" class="hidden bg-[#111116] p-4 rounded-2xl border border-white/10 space-y-3 pt-3">
-            <h4 class="text-xs font-bold text-white flex items-center gap-1.5">
-              <i class="fa-solid fa-key text-emerald-400"></i> Digite o código de 4 dígitos
-            </h4>
-            
-            <input type="text" id="input-proximity-code" maxlength="4" placeholder="Ex: 4829" class="w-full bg-[#0f0f12] border border-white/10 rounded-xl py-3 text-center tracking-[0.5em] text-lg font-mono font-bold text-white focus:outline-none focus:border-emerald-400 transition" />
-
-            <button id="btn-submit-proximity-scan" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl text-xs transition">
-              Verificar Código
-            </button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- 5. VENTILADOR SAFE WARNING MODAL -->
-    <div id="modal-ventilador-safe-warning" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
-      <div class="bg-nu-cardDark border border-red-500/30 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl animate-fade-in">
-        <div class="w-16 h-16 bg-red-500/20 text-red-500 rounded-full mx-auto flex items-center justify-center text-3xl mb-4 border border-red-500/30 pulse-animation">
-          <i class="fa-solid fa-shield-cat"></i>
-        </div>
-        
-        <div class="inline-block bg-red-500/20 text-red-400 text-[10px] font-bold px-2.5 py-1 rounded-full border border-red-500/30 mb-2">
-          ALERTA VENTILADOR SAFE
-        </div>
-
-        <h3 class="text-base font-extrabold text-white mb-3 leading-snug">
-          Deseja pagar essa conta mesmo? Essa conta parece ser um roubo.
-        </h3>
-
-        <p class="text-xs text-nu-textMuted mb-6 leading-relaxed">
-          Esta conta destinatária é recente (menos de 30 dias de criação) e não possui histórico regular de transações.
-        </p>
-
-        <div class="space-y-2">
-          <button id="btn-confirm-ventilador-safe" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl text-xs transition shadow-lg shadow-red-600/20">
-            Sim, desejo pagar mesmo assim
-          </button>
-          <button id="btn-cancel-ventilador-safe" class="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-xl text-xs transition">
-            Cancelar Transação
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 6. GENERATED PROXIMITY CODE MODAL (Seller Screen) -->
-    <div id="modal-generated-code" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-      <div class="bg-nu-cardDark border border-[#820AD1]/40 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl relative">
-        <button id="btn-close-generated-code" class="absolute top-4 right-4 text-nu-textMuted hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-
-        <div id="proximity-waiting-state" class="space-y-4">
-          <div class="w-14 h-14 bg-[#820AD1]/20 text-[#a842f4] rounded-2xl mx-auto flex items-center justify-center text-2xl border border-[#820AD1]/30">
-            <i class="fa-solid fa-wifi rotate-fan"></i>
-          </div>
-
-          <h3 class="text-base font-bold text-white">Código de Aproximação</h3>
-          <p class="text-xs text-nu-textMuted">Mostre o código abaixo para quem irá te pagar:</p>
-
-          <!-- The 4-digit code display -->
-          <div class="bg-[#111116] border border-[#820AD1] rounded-2xl py-4 px-6 text-3xl font-mono font-extrabold text-[#a842f4] tracking-[0.4em] my-3 shadow-inner">
-            <span id="display-generated-4digit">0000</span>
-          </div>
-
-          <div class="flex items-center justify-center space-x-2 text-xs text-emerald-400 font-medium">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            <span>Aguardando pagamento em tempo real...</span>
-          </div>
-        </div>
-
-        <!-- Success overlay state when paid -->
-        <div id="proximity-success-state" class="hidden space-y-4 py-2">
-          <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full mx-auto flex items-center justify-center text-3xl border border-emerald-500/40">
-            <i class="fa-solid fa-check"></i>
-          </div>
-
-          <h3 class="text-xl font-extrabold text-emerald-400">Pago com sucesso!</h3>
-          
-          <div class="bg-[#111116] p-4 rounded-2xl border border-white/5 space-y-1">
-            <p class="text-xs text-nu-textMuted">Valor recebido</p>
-            <p id="proximity-success-amount" class="text-2xl font-bold text-white">R$ 0,00</p>
-            <p class="text-[11px] text-nu-textMuted pt-1">De: <span id="proximity-success-payer" class="text-white">--</span></p>
-          </div>
-
-          <button id="btn-close-proximity-success" class="w-full bg-[#820AD1] hover:bg-[#5f0799] text-white font-semibold py-3 rounded-xl text-xs transition">
-            Fechar
-          </button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- 7. PROXIMITY AMOUNT PROMPT MODAL (Payer asks "Quanto de dinheiro você quer dar?") -->
-    <div id="modal-proximity-amount-prompt" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[60] hidden flex items-center justify-center p-4">
-      <div class="bg-nu-cardDark border border-emerald-500/30 rounded-3xl p-6 w-full max-w-sm text-left shadow-2xl">
-        <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center text-xl mb-3 border border-emerald-500/30">
-          <i class="fa-solid fa-hand-holding-dollar"></i>
-        </div>
-
-        <h3 class="text-lg font-extrabold text-white mb-1">
-          Quanto de dinheiro você quer dar?
-        </h3>
-        <p class="text-xs text-nu-textMuted mb-4">Código verificado! Digite o valor que deseja enviar para este usuário.</p>
-
-        <div class="mb-4">
-          <label class="block text-xs text-nu-textMuted mb-1 font-medium">Valor (R$)</label>
-          <div class="relative">
-            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-nu-textMuted text-xs font-bold">R$</span>
-            <input type="number" id="input-proximity-pay-amount" placeholder="0.00" min="0.01" step="0.01" class="w-full bg-[#111116] border border-white/10 rounded-xl py-3 pl-12 pr-4 text-sm text-white focus:outline-none focus:border-emerald-400 transition" />
-          </div>
-        </div>
-
-        <div class="space-y-2">
-          <button id="btn-confirm-proximity-payment" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs transition shadow-lg shadow-emerald-600/20">
-            Confirmar e Enviar
-          </button>
-          <button id="btn-cancel-proximity-payment" class="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-xl text-xs transition">
-            Cancelar
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 8. RECEIPT VOUCHER MODAL (Comprovante) -->
-    <div id="modal-receipt" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[70] hidden flex items-center justify-center p-4">
-      <div class="bg-nu-cardDark border border-white/10 rounded-3xl p-6 w-full max-w-sm text-left shadow-2xl relative">
-        
-        <div class="text-center border-b border-white/10 pb-4 mb-4">
-          <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full mx-auto flex items-center justify-center text-xl mb-2">
-            <i class="fa-solid fa-circle-check"></i>
-          </div>
-          <h3 class="text-base font-bold text-white">Comprovante de Pagamento</h3>
-          <p class="text-[11px] text-nu-textMuted">Ventilador Pay • Transação Concluída</p>
-        </div>
-
-        <div class="space-y-3 text-xs mb-6">
-          <div class="flex justify-between items-center py-1 border-b border-white/5">
-            <span class="text-nu-textMuted">Valor pago</span>
-            <span id="receipt-amount" class="font-bold text-white text-sm">R$ 0,00</span>
-          </div>
-
-          <div class="flex justify-between items-center py-1 border-b border-white/5">
-            <span class="text-nu-textMuted">Pagador</span>
-            <span id="receipt-sender" class="font-medium text-white truncate max-w-[180px]">--</span>
-          </div>
-
-          <div class="flex justify-between items-center py-1 border-b border-white/5">
-            <span class="text-nu-textMuted">Destinatário</span>
-            <span id="receipt-recipient" class="font-medium text-white truncate max-w-[180px]">--</span>
-          </div>
-
-          <div class="flex justify-between items-center py-1 border-b border-white/5">
-            <span class="text-nu-textMuted">Data e Hora</span>
-            <span id="receipt-date" class="font-medium text-white">--</span>
-          </div>
-
-          <div class="flex justify-between items-center py-1 border-b border-white/5">
-            <span class="text-nu-textMuted">Segurança</span>
-            <span id="receipt-safe-status" class="font-medium text-emerald-400">Ventilador Safe ✔</span>
-          </div>
-
-          <div class="flex justify-between items-center py-1">
-            <span class="text-nu-textMuted">ID da Transação</span>
-            <span id="receipt-tx-id" class="font-mono text-[10px] text-nu-textMuted">--</span>
-          </div>
-        </div>
-
-        <button id="btn-close-receipt" class="w-full bg-[#820AD1] hover:bg-[#5f0799] text-white font-semibold py-3 rounded-xl text-xs transition">
-          Fechar Comprovante
-        </button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Firebase SDK Imports Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { 
-      getAuth, 
-      createUserWithEmailAndPassword, 
-      signInWithEmailAndPassword, 
-      sendPasswordResetEmail, 
-      sendEmailVerification, 
-      onAuthStateChanged, 
-      signOut 
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { 
-      getFirestore, 
-      doc, 
-      setDoc, 
-      getDoc, 
-      getDocs, 
-      updateDoc, 
-      collection, 
-      onSnapshot, 
-      deleteDoc 
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-    // User's exact provided Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyArC872DnSB3EBLNpl-Lxajo9rEbS2UlCc",
-      authDomain: "ventilador-pay.firebaseapp.com",
-      projectId: "ventilador-pay",
-      storageBucket: "ventilador-pay.firebasestorage.app",
-      messagingSenderId: "466899508532",
-      appId: "1:466899508532:web:54c147a36cc115039e5961",
-      measurementId: "G-DBLHR13NDB"
-    };
-
-    // Initialize Firebase Services
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // Dynamic App Identifier for strict Firestore paths
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'ventilador-pay-app';
-
-    // Global Application State
-    let currentUser = null;
-    let currentUserData = null;
-    let userUnsubscribe = null;
-    let activeProximityUnsubscribe = null;
-    let isBalanceHidden = false;
-    let currentPendingPayment = null; // Stores temporary payment context for Ventilador Safe
-
-    // Toast Notification System
-    function showToast(message, type = 'info') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      
-      let bgColor = 'bg-nu-cardDark border-[#820AD1] text-white';
-      let icon = 'fa-circle-info text-[#a842f4]';
-
-      if (type === 'success') {
-        bgColor = 'bg-nu-cardDark border-emerald-500 text-white';
-        icon = 'fa-circle-check text-emerald-400';
-      } else if (type === 'error') {
-        bgColor = 'bg-nu-cardDark border-red-500 text-white';
-        icon = 'fa-circle-exclamation text-red-400';
-      } else if (type === 'warning') {
-        bgColor = 'bg-nu-cardDark border-amber-500 text-white';
-        icon = 'fa-triangle-exclamation text-amber-400';
-      }
-
-      toast.className = `p-3.5 rounded-2xl border shadow-xl flex items-center space-x-3 text-xs font-medium transition-all duration-300 transform translate-y-[-10px] opacity-0 pointer-events-auto my-2 ${bgColor}`;
-      toast.innerHTML = `<i class="fa-solid ${icon} text-base flex-shrink-0"></i> <span>${message}</span>`;
-
-      container.appendChild(toast);
-
-      setTimeout(() => {
-        toast.classList.remove('translate-y-[-10px]', 'opacity-0');
-      }, 10);
-
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'translate-y-[-10px]');
-        setTimeout(() => toast.remove(), 300);
-      }, 4000);
-    }
-
-    // Format Currency Real (BRL)
-    function formatBRL(value) {
-      const num = parseFloat(value) || 0;
-      return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
-
-    // Navigation Switcher
-    function showView(viewId) {
-      document.getElementById('loading-screen').classList.add('hidden');
-      document.getElementById('auth-views').classList.add('hidden');
-      document.getElementById('dashboard-view').classList.add('hidden');
-
-      if (viewId === 'dashboard') {
-        document.getElementById('dashboard-view').classList.remove('hidden');
-      } else {
-        document.getElementById('auth-views').classList.remove('hidden');
-        document.getElementById('view-login').classList.add('hidden');
-        document.getElementById('view-signup').classList.add('hidden');
-        document.getElementById('view-forgot').classList.add('hidden');
-        
-        document.getElementById(`view-${viewId}`).classList.remove('hidden');
-      }
-    }
-
-    // Monitor Auth State
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        currentUser = user;
-        
-        // Listen to User Profile Data in Firestore
-        const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', user.uid);
-        
-        if (userUnsubscribe) userUnsubscribe();
-
-        userUnsubscribe = onSnapshot(userDocRef, (snapshot) => {
-          if (snapshot.exists()) {
-            currentUserData = snapshot.data();
-            updateDashboardUI();
-          } else {
-            // Profile initial creation if not existing
-            const initialData = {
-              uid: user.uid,
-              email: user.email,
-              balance: 0.00,
-              createdAt: Date.now(),
-              lastTxDate: null
-            };
-            setDoc(userDocRef, initialData);
-            currentUserData = initialData;
-            updateDashboardUI();
-          }
-        }, (error) => {
-          console.error("Erro ao ouvir perfil do usuário:", error);
-        });
-
-        showView('dashboard');
-      } else {
-        currentUser = null;
-        currentUserData = null;
-        if (userUnsubscribe) userUnsubscribe();
-        showView('login');
-      }
-    });
-
-    // Update Dashboard Interface
-    function updateDashboardUI() {
-      if (!currentUserData) return;
-
-      document.getElementById('user-greeting-email').textContent = currentUserData.email.split('@')[0];
-      
-      const balanceValue = currentUserData.balance || 0;
-      document.getElementById('balance-display').textContent = formatBRL(balanceValue);
-    }
-
-    // Event: Login
-    document.getElementById('btn-login').addEventListener('click', async () => {
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value.trim();
-
-      if (!email || !password) {
-        showToast('Preencha o e-mail e a senha para entrar.', 'warning');
-        return;
-      }
-
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        showToast('Login efetuado com sucesso!', 'success');
-      } catch (error) {
-        let msg = 'Falha ao realizar login. Verifique seus dados.';
-        if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-          msg = 'E-mail ou senha incorretos.';
-        }
-        showToast(msg, 'error');
-      }
-    });
-
-    // Event: Signup
-    document.getElementById('btn-signup').addEventListener('click', async () => {
-      const email = document.getElementById('signup-email').value.trim();
-      const password = document.getElementById('signup-password').value.trim();
-
-      if (!email || !password) {
-        showToast('Informe e-mail e senha para se cadastrar.', 'warning');
-        return;
-      }
-
-      if (password.length < 6) {
-        showToast('A senha deve possuir pelo menos 6 caracteres.', 'warning');
-        return;
-      }
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const newUser = userCredential.user;
-
-        // Send Email Verification
-        try {
-          await sendEmailVerification(newUser);
-          showToast('E-mail de verificação enviado! Cheque sua caixa de entrada.', 'info');
-        } catch (e) {
-          console.log('Envio de email verificação:', e);
-        }
-
-        // Save User Document with initial balance 0.00
-        const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', newUser.uid);
-        await setDoc(userDocRef, {
-          uid: newUser.uid,
-          email: newUser.email,
-          balance: 0.00,
-          createdAt: Date.now(),
-          lastTxDate: null
-        });
-
-        showToast('Conta criada com sucesso no Ventilador Pay!', 'success');
-      } catch (error) {
-        let msg = 'Erro ao criar conta.';
-        if (error.code === 'auth/email-already-in-use') {
-          msg = 'Este e-mail já está cadastrado no sistema.';
-        }
-        showToast(msg, 'error');
-      }
-    });
-
-    // Event: Forgot Password
-    document.getElementById('btn-forgot').addEventListener('click', async () => {
-      const email = document.getElementById('forgot-email').value.trim();
-
-      if (!email) {
-        showToast('Digite seu e-mail para receber a redefinição.', 'warning');
-        return;
-      }
-
-      try {
-        await sendPasswordResetEmail(auth, email);
-        showToast('E-mail de redefinição de senha enviado com sucesso!', 'success');
-        showView('login');
-      } catch (error) {
-        showToast('Erro ao enviar e-mail. Verifique se o endereço está correto.', 'error');
-      }
-    });
-
-    // Navigation Links Switching
-    document.getElementById('link-go-signup').addEventListener('click', () => showView('signup'));
-    document.getElementById('link-go-forgot').addEventListener('click', () => showView('forgot'));
-    document.getElementById('link-back-login-1').addEventListener('click', () => showView('login'));
-    document.getElementById('link-back-login-2').addEventListener('click', () => showView('login'));
-
-    // Event: Logout
-    document.getElementById('btn-logout').addEventListener('click', async () => {
-      await signOut(auth);
-      showToast('Sessão encerrada.', 'info');
-    });
-
-    // Event: Hide / Show Balance
-    document.getElementById('btn-toggle-balance').addEventListener('click', () => {
-      isBalanceHidden = !isBalanceHidden;
-      const displayEl = document.getElementById('balance-display');
-      const hiddenEl = document.getElementById('balance-hidden');
-      const iconEl = document.getElementById('eye-icon');
-
-      if (isBalanceHidden) {
-        displayEl.classList.add('hidden');
-        hiddenEl.classList.remove('hidden');
-        iconEl.className = 'fa-regular fa-eye-slash';
-      } else {
-        displayEl.classList.remove('hidden');
-        hiddenEl.classList.add('hidden');
-        iconEl.className = 'fa-regular fa-eye';
-      }
-    });
-
-    // Event: Loan Maintenance Button
-    document.getElementById('btn-action-loan').addEventListener('click', () => {
-      document.getElementById('modal-loan-maintenance').classList.remove('hidden');
-    });
-
-    // Event: Soon Feature Buttons
-    document.querySelectorAll('.btn-action-soon').forEach(button => {
-      button.addEventListener('click', () => {
-        const featureName = button.getAttribute('data-feature') || 'Este recurso';
-        document.getElementById('modal-soon-name').textContent = featureName;
-        document.getElementById('modal-soon').classList.remove('hidden');
-      });
-    });
-
-    // Close Modal Standard Event
-    document.querySelectorAll('.btn-close-modal').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const modal = e.target.closest('.fixed');
-        if (modal) modal.classList.add('hidden');
-      });
-    });
-
-    // Event: Add Test Balance Modal Open
-    document.getElementById('btn-add-test-balance').addEventListener('click', () => {
-      document.getElementById('modal-add-balance').classList.remove('hidden');
-    });
-
-    // Quick Deposit Value Buttons
-    document.querySelectorAll('.btn-quick-deposit').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const amount = parseFloat(btn.getAttribute('data-amount'));
-        executeTestDeposit(amount);
-      });
-    });
-
-    // Confirm Custom Deposit
-    document.getElementById('btn-confirm-deposit').addEventListener('click', () => {
-      const val = parseFloat(document.getElementById('input-custom-deposit').value);
-      if (isNaN(val) || val <= 0) {
-        showToast('Insira um valor maior que R$ 0,00', 'warning');
-        return;
-      }
-      executeTestDeposit(val);
-    });
-
-    async function executeTestDeposit(amount) {
-      if (!currentUser || !currentUserData) return;
-      
-      try {
-        const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
-        const newBalance = (currentUserData.balance || 0) + amount;
-        
-        await updateDoc(userDocRef, {
-          balance: newBalance
-        });
-
-        document.getElementById('modal-add-balance').classList.add('hidden');
-        document.getElementById('input-custom-deposit').value = '';
-        showToast(`Depósito de ${formatBRL(amount)} efetuado com sucesso na sua conta!`, 'success');
-      } catch (error) {
-        console.error("Erro ao depositar:", error);
-        showToast('Erro ao depositar saldo de teste.', 'error');
-      }
-    }
-
-    // Event: Open Main Pay Modal
-    document.getElementById('btn-action-pay').addEventListener('click', () => {
-      document.getElementById('modal-pay-main').classList.remove('hidden');
-    });
-
-    // Tab Switching inside Pay Modal
-    const tabEmail = document.getElementById('tab-pay-email');
-    const tabProximity = document.getElementById('tab-pay-proximity');
-    const contentEmail = document.getElementById('content-pay-email');
-    const contentProximity = document.getElementById('content-pay-proximity');
-
-    tabEmail.addEventListener('click', () => {
-      tabEmail.className = 'flex-1 py-2 text-xs font-semibold rounded-lg bg-[#820AD1] text-white transition flex items-center justify-center gap-2';
-      tabProximity.className = 'flex-1 py-2 text-xs font-semibold rounded-lg text-nu-textMuted hover:text-white transition flex items-center justify-center gap-2';
-      contentEmail.classList.remove('hidden');
-      contentProximity.classList.add('hidden');
-    });
-
-    tabProximity.addEventListener('click', () => {
-      tabProximity.className = 'flex-1 py-2 text-xs font-semibold rounded-lg bg-[#820AD1] text-white transition flex items-center justify-center gap-2';
-      tabEmail.className = 'flex-1 py-2 text-xs font-semibold rounded-lg text-nu-textMuted hover:text-white transition flex items-center justify-center gap-2';
-      contentProximity.classList.remove('hidden');
-      contentEmail.classList.add('hidden');
-    });
-
-    // Submit Payment by Email
-    document.getElementById('btn-submit-pay-email').addEventListener('click', async () => {
-      const recipientEmail = document.getElementById('pay-email-input').value.trim().toLowerCase();
-      const amount = parseFloat(document.getElementById('pay-email-amount').value);
-
-      if (!recipientEmail) {
-        showToast('Digite o e-mail do destinatário.', 'warning');
-        return;
-      }
-
-      if (isNaN(amount) || amount <= 0) {
-        showToast('Informe um valor de pagamento válido.', 'warning');
-        return;
-      }
-
-      if (recipientEmail === currentUserData.email.toLowerCase()) {
-        showToast('Você não pode transferir dinheiro para você mesmo.', 'warning');
-        return;
-      }
-
-      if ((currentUserData.balance || 0) < amount) {
-        showToast(`Saldo insuficiente! Seu saldo atual é ${formatBRL(currentUserData.balance || 0)}`, 'error');
-        return;
-      }
-
-      // Search recipient in Firestore
-      try {
-        const usersCollRef = collection(db, 'artifacts', appId, 'public', 'data', 'users');
-        const querySnapshot = await getDocs(usersCollRef);
-        
-        let recipientUser = null;
-        querySnapshot.forEach(docSnap => {
-          const data = docSnap.data();
-          if (data.email && data.email.toLowerCase() === recipientEmail) {
-            recipientUser = data;
-          }
-        });
-
-        if (!recipientUser) {
-          showToast('Nenhuma conta do Ventilador Pay foi encontrada com esse e-mail.', 'error');
-          return;
-        }
-
-        // Store payment context
-        currentPendingPayment = {
-          recipient: recipientUser,
-          amount: amount,
-          type: 'email'
+    <!-- Firebase SDK Implementation -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            sendEmailVerification, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            getDoc, 
+            updateDoc, 
+            collection, 
+            query, 
+            where, 
+            getDocs, 
+            addDoc, 
+            onSnapshot, 
+            serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Firebase Configuration as provided by user
+        const firebaseConfig = {
+            apiKey: "AIzaSyArC872DnSB3EBLNpl-Lxajo9rEbS2UlCc",
+            authDomain: "ventilador-pay.firebaseapp.com",
+            projectId: "ventilador-pay",
+            storageBucket: "ventilador-pay.firebasestorage.app",
+            messagingSenderId: "466899508532",
+            appId: "1:466899508532:web:54c147a36cc115039e5961",
+            measurementId: "G-DBLHR13NDB"
         };
 
-        // VENTILADOR SAFE CHECK
-        // Requirement: Account created >= 30 days ago OR has transaction in last 30 days
-        const now = Date.now();
-        const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
-        
-        const accountAge = now - (recipientUser.createdAt || now);
-        const isAccount30DaysOld = accountAge >= thirtyDaysMs;
+        // Initialize Firebase Apps
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        let hasRegularTransactions = false;
-        if (recipientUser.lastTxDate) {
-          const timeSinceLastTx = now - recipientUser.lastTxDate;
-          if (timeSinceLastTx <= thirtyDaysMs) {
-            hasRegularTransactions = true;
-          }
-        }
+        // Application Global State
+        let currentUser = null;
+        let userData = { balance: 0.00, payCode: '------', email: '' };
+        let activeAuthMode = 'login'; // 'login' or 'register'
+        let isBalanceVisible = true;
+        let unsubscribeUserData = null;
+        let unsubscribeTxData = null;
 
-        const passesVentiladorSafe = isAccount30DaysOld || hasRegularTransactions;
+        // UI Toast Helper Function
+        window.showToast = function(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-emerald-950/90 border-emerald-500 text-emerald-200' :
+                            type === 'error' ? 'bg-rose-950/90 border-rose-500 text-rose-200' :
+                            'bg-slate-900/90 border-cyan-500 text-cyan-200';
+            
+            const icon = type === 'success' ? 'fa-circle-check text-emerald-400' :
+                         type === 'error' ? 'fa-circle-xmark text-rose-400' :
+                         'fa-circle-info text-cyan-400';
 
-        if (passesVentiladorSafe) {
-          // Pass safe directly
-          executePaymentTransfer(currentPendingPayment, true);
-        } else {
-          // Trigger Ventilador Safe warning modal
-          document.getElementById('modal-ventilador-safe-warning').classList.remove('hidden');
-        }
+            toast.className = `p-3.5 rounded-xl border backdrop-blur-md shadow-xl text-xs font-medium flex items-center gap-3 transition-all transform translate-y-2 opacity-0 pointer-events-auto ${bgClass}`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-base shrink-0"></i> <span>${message}</span>`;
 
-      } catch (error) {
-        console.error("Erro ao buscar destinatário:", error);
-        showToast('Erro ao processar consulta de pagamento.', 'error');
-      }
-    });
+            container.appendChild(toast);
 
-    // Confirm Payment inside Ventilador Safe Warning Modal
-    document.getElementById('btn-confirm-ventilador-safe').addEventListener('click', () => {
-      document.getElementById('modal-ventilador-safe-warning').classList.add('hidden');
-      if (currentPendingPayment) {
-        executePaymentTransfer(currentPendingPayment, false);
-      }
-    });
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
 
-    // Cancel Ventilador Safe
-    document.getElementById('btn-cancel-ventilador-safe').addEventListener('click', () => {
-      document.getElementById('modal-ventilador-safe-warning').classList.add('hidden');
-      currentPendingPayment = null;
-      showToast('Pagamento cancelado com segurança.', 'info');
-    });
+            // Auto dismiss
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        };
 
-    // Execute Balance Transfer Routine
-    async function executePaymentTransfer(paymentInfo, passedSafeCheck) {
-      try {
-        const { recipient, amount } = paymentInfo;
+        // Auth State Change Observer
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                console.log("Logged in user:", user.email);
+                
+                // Show Email Verification Notice if unverified
+                const banner = document.getElementById('email-verification-banner');
+                if (!user.emailVerified) {
+                    banner.classList.remove('hidden');
+                } else {
+                    banner.classList.add('hidden');
+                }
 
-        const senderRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
-        const recipientRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', recipient.uid);
+                // Switch UI to Dashboard
+                document.getElementById('screen-auth').classList.add('hidden');
+                document.getElementById('screen-dashboard').classList.remove('hidden');
+                document.getElementById('user-email-display').innerText = user.email;
+                
+                // Set initials
+                const initials = user.email.substring(0, 2).toUpperCase();
+                document.getElementById('user-avatar-initials').innerText = initials;
 
-        const now = Date.now();
+                // Sync User Doc & Transactions
+                subscribeUserData(user.uid);
+                subscribeTransactions(user.email);
 
-        // Deduct from Sender
-        await updateDoc(senderRef, {
-          balance: (currentUserData.balance || 0) - amount,
-          lastTxDate: now
-        });
+            } else {
+                currentUser = null;
+                if (unsubscribeUserData) unsubscribeUserData();
+                if (unsubscribeTxData) unsubscribeTxData();
 
-        // Add to Recipient
-        await updateDoc(recipientRef, {
-          balance: (recipient.balance || 0) + amount,
-          lastTxDate: now
-        });
-
-        // Close Pay Modal & Reset Form Inputs
-        document.getElementById('modal-pay-main').classList.add('hidden');
-        document.getElementById('pay-email-input').value = '';
-        document.getElementById('pay-email-amount').value = '';
-
-        // Generate and display receipt
-        displayReceipt({
-          amount: amount,
-          senderEmail: currentUserData.email,
-          recipientEmail: recipient.email,
-          date: new Date(now).toLocaleString('pt-BR'),
-          safeStatus: passedSafeCheck ? 'Aprovado pelo Ventilador Safe ✔' : 'Confirmado manualmente após alerta',
-          txId: 'VP-' + Math.random().toString(36).substr(2, 9).toUpperCase()
-        });
-
-        currentPendingPayment = null;
-
-      } catch (error) {
-        console.error("Erro ao efetuar transferência:", error);
-        showToast('Ocorreu um erro ao processar a transferência.', 'error');
-      }
-    }
-
-    // Display Receipt Voucher
-    function displayReceipt(data) {
-      document.getElementById('receipt-amount').textContent = formatBRL(data.amount);
-      document.getElementById('receipt-sender').textContent = data.senderEmail;
-      document.getElementById('receipt-recipient').textContent = data.recipientEmail;
-      document.getElementById('receipt-date').textContent = data.date;
-      document.getElementById('receipt-safe-status').textContent = data.safeStatus;
-      document.getElementById('receipt-tx-id').textContent = data.txId;
-
-      document.getElementById('modal-receipt').classList.remove('hidden');
-    }
-
-    document.getElementById('btn-close-receipt').addEventListener('click', () => {
-      document.getElementById('modal-receipt').classList.add('hidden');
-    });
-
-    // Proximity Subtab Buttons
-    document.getElementById('btn-subtab-generate-code').addEventListener('click', generateProximityCode);
-    document.getElementById('btn-subtab-scan-code').addEventListener('click', () => {
-      document.getElementById('section-scan-proximity').classList.toggle('hidden');
-    });
-
-    // 1. Generate Proximity Code (Seller Side)
-    async function generateProximityCode() {
-      if (!currentUser || !currentUserData) return;
-
-      // Generate random 4-digit code
-      const code4Digit = Math.floor(1000 + Math.random() * 9000).toString();
-
-      document.getElementById('display-generated-4digit').textContent = code4Digit;
-      document.getElementById('proximity-waiting-state').classList.remove('hidden');
-      document.getElementById('proximity-success-state').classList.add('hidden');
-      
-      document.getElementById('modal-pay-main').classList.add('hidden');
-      document.getElementById('modal-generated-code').classList.remove('hidden');
-
-      const codeDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'payCodes', code4Digit);
-
-      try {
-        await setDoc(codeDocRef, {
-          code: code4Digit,
-          sellerUid: currentUser.uid,
-          sellerEmail: currentUserData.email,
-          status: 'pending',
-          amount: 0,
-          payerEmail: '',
-          createdAt: Date.now()
-        });
-
-        // Listen in real-time for payment status update
-        if (activeProximityUnsubscribe) activeProximityUnsubscribe();
-
-        activeProximityUnsubscribe = onSnapshot(codeDocRef, (snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.data();
-            if (data.status === 'paid') {
-              // Show Success state on Seller's phone
-              document.getElementById('proximity-waiting-state').classList.add('hidden');
-              document.getElementById('proximity-success-state').classList.remove('hidden');
-              document.getElementById('proximity-success-amount').textContent = formatBRL(data.amount);
-              document.getElementById('proximity-success-payer').textContent = data.payerEmail;
-
-              // Clean up listening and delete code document
-              if (activeProximityUnsubscribe) activeProximityUnsubscribe();
-              deleteDoc(codeDocRef);
+                // Show Auth Screen
+                document.getElementById('screen-auth').classList.remove('hidden');
+                document.getElementById('screen-dashboard').classList.add('hidden');
             }
-          }
-        }, (err) => console.log('Proximity listener error:', err));
+        });
 
-      } catch (error) {
-        console.error("Erro ao gerar código de aproximação:", error);
-        showToast('Erro ao criar código de aproximação.', 'error');
-      }
-    }
-
-    // Close Generated Proximity Code Modal
-    document.getElementById('btn-close-generated-code').addEventListener('click', () => {
-      document.getElementById('modal-generated-code').classList.add('hidden');
-      if (activeProximityUnsubscribe) activeProximityUnsubscribe();
-    });
-
-    document.getElementById('btn-close-proximity-success').addEventListener('click', () => {
-      document.getElementById('modal-generated-code').classList.add('hidden');
-    });
-
-    // 2. Scan / Enter Proximity Code (Payer Side)
-    let activeScannedCodeData = null;
-
-    document.getElementById('btn-submit-proximity-scan').addEventListener('click', async () => {
-      const codeInput = document.getElementById('input-proximity-code').value.trim();
-
-      if (codeInput.length !== 4) {
-        showToast('Digite um código válido de 4 dígitos.', 'warning');
-        return;
-      }
-
-      try {
-        const codeDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'payCodes', codeInput);
-        const codeSnap = await getDoc(codeDocRef);
-
-        if (!codeSnap.exists() || codeSnap.data().status !== 'pending') {
-          showToast('Código de aproximação inválido ou já expirado.', 'error');
-          return;
+        // Generate 6-digit random code for proximity payments
+        function generateProximityCode() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
         }
 
-        const codeData = codeSnap.data();
-
-        if (codeData.sellerUid === currentUser.uid) {
-          showToast('Você não pode pagar para o seu próprio código!', 'warning');
-          return;
+        // Subscribe to User Document in Firestore
+        function subscribeUserData(uid) {
+            const userRef = doc(db, 'users', uid);
+            unsubscribeUserData = onSnapshot(userRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    userData = snapshot.data();
+                    updateDashboardUI();
+                } else {
+                    // Document does not exist yet (create default)
+                    const newCode = generateProximityCode();
+                    const initialData = {
+                        email: currentUser.email,
+                        balance: 0.00,
+                        payCode: newCode,
+                        createdAt: serverTimestamp()
+                    };
+                    setDoc(userRef, initialData).then(() => {
+                        userData = initialData;
+                        updateDashboardUI();
+                    });
+                }
+            }, (error) => {
+                console.error("Firestore sync error:", error);
+            });
         }
 
-        activeScannedCodeData = codeData;
+        // Subscribe to Transactions History
+        function subscribeTransactions(email) {
+            const txRef = collection(db, 'transactions');
+            // Simple query to avoid complex indexing issues
+            unsubscribeTxData = onSnapshot(txRef, (snapshot) => {
+                const txs = [];
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.senderEmail === email || data.recipientEmail === email) {
+                        txs.push({ id: docSnap.id, ...data });
+                    }
+                });
 
-        // Hide Pay Modal and prompt amount modal
-        document.getElementById('modal-pay-main').classList.add('hidden');
-        document.getElementById('input-proximity-code').value = '';
-        document.getElementById('modal-proximity-amount-prompt').classList.remove('hidden');
+                // Sort by date descending
+                txs.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+                renderTransactionsList(txs, email);
+            }, (error) => {
+                console.error("Tx snapshot error:", error);
+            });
+        }
 
-      } catch (error) {
-        console.error("Erro ao verificar código de aproximação:", error);
-        showToast('Erro ao consultar código.', 'error');
-      }
-    });
+        // Update UI Elements with latest userData
+        function updateDashboardUI() {
+            const balanceElem = document.getElementById('balance-amount');
+            if (isBalanceVisible) {
+                balanceElem.innerText = (userData.balance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            } else {
+                balanceElem.innerText = '••••,••';
+            }
 
-    // Confirm Proximity Payment ("Quanto de dinheiro você quer dar?")
-    document.getElementById('btn-confirm-proximity-payment').addEventListener('click', async () => {
-      const amount = parseFloat(document.getElementById('input-proximity-pay-amount').value);
+            // Update Proximity Code & QR Code
+            const codeElem = document.getElementById('my-proximity-code');
+            if (codeElem) {
+                codeElem.innerText = userData.payCode || '------';
+            }
 
-      if (isNaN(amount) || amount <= 0) {
-        showToast('Informe um valor válido para transferência.', 'warning');
-        return;
-      }
+            renderQRCode(userData.payCode || '000000');
+        }
 
-      if ((currentUserData.balance || 0) < amount) {
-        showToast(`Saldo insuficiente! Seu saldo atual é ${formatBRL(currentUserData.balance || 0)}`, 'error');
-        return;
-      }
+        // Render QR Code for Proximity Payment
+        function renderQRCode(code) {
+            const container = document.getElementById('qrcode-container');
+            if (!container) return;
+            container.innerHTML = '';
+            new QRCode(container, {
+                text: `VENTILADORPAY:${code}`,
+                width: 120,
+                height: 120,
+                colorDark : "#080c14",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
 
-      if (!activeScannedCodeData) return;
+        // Toggle Eye visibility on balance
+        window.toggleBalanceVisibility = function() {
+            isBalanceVisible = !isBalanceVisible;
+            const icon = document.getElementById('balance-eye-icon');
+            if (isBalanceVisible) {
+                icon.className = 'fa-solid fa-eye text-sm';
+            } else {
+                icon.className = 'fa-solid fa-eye-slash text-sm';
+            }
+            updateDashboardUI();
+        };
 
-      try {
-        const payerRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', currentUser.uid);
-        const sellerRef = doc(db, 'artifacts', appId, 'public', 'data', 'users', activeScannedCodeData.sellerUid);
-        const codeDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'payCodes', activeScannedCodeData.code);
+        // Render Transaction History List
+        function renderTransactionsList(txs, myEmail) {
+            const listElem = document.getElementById('transactions-list');
+            const countElem = document.getElementById('tx-count');
+            countElem.innerText = `${txs.length} transaçã${txs.length === 1 ? 'o' : 'ões'}`;
 
-        const now = Date.now();
+            if (txs.length === 0) {
+                listElem.innerHTML = `
+                    <div class="text-center py-8 text-slate-500 text-xs">
+                        <i class="fa-solid fa-receipt text-2xl mb-2 opacity-50 block"></i>
+                        Nenhuma transação realizada ainda.
+                    </div>`;
+                return;
+            }
 
-        // 1. Get seller current profile
-        const sellerSnap = await getDoc(sellerRef);
-        const sellerData = sellerSnap.exists() ? sellerSnap.data() : { balance: 0 };
+            listElem.innerHTML = txs.map(tx => {
+                const isSent = tx.senderEmail === myEmail;
+                const dateStr = tx.timestamp ? new Date(tx.timestamp.seconds * 1000).toLocaleString('pt-BR') : 'Agora';
+                
+                return `
+                    <div class="p-3 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl ${isSent ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'} flex items-center justify-center text-xs">
+                                <i class="fa-solid ${isSent ? 'fa-arrow-up-right' : 'fa-arrow-down-left'}"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-200">
+                                    ${isSent ? 'Enviado para' : 'Recebido de'}
+                                </p>
+                                <p class="text-[11px] text-slate-400 truncate max-w-[130px] sm:max-w-[180px]">
+                                    ${isSent ? tx.recipientEmail : tx.senderEmail}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs font-extrabold ${isSent ? 'text-rose-400' : 'text-emerald-400'}">
+                                ${isSent ? '-' : '+'} R$ ${(tx.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </p>
+                            <p class="text-[10px] text-slate-500">${dateStr}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
 
-        // 2. Deduct from Payer
-        await updateDoc(payerRef, {
-          balance: (currentUserData.balance || 0) - amount,
-          lastTxDate: now
-        });
+        // Auth Tab Switching
+        window.switchAuthTab = function(mode) {
+            activeAuthMode = mode;
+            const loginBtn = document.getElementById('tab-login-btn');
+            const regBtn = document.getElementById('tab-register-btn');
+            const btnText = document.getElementById('auth-btn-text');
+            const infoBox = document.getElementById('register-verify-info');
 
-        // 3. Add to Seller
-        await updateDoc(sellerRef, {
-          balance: (sellerData.balance || 0) + amount,
-          lastTxDate: now
-        });
+            infoBox.classList.add('hidden');
 
-        // 4. Update payCode document status to 'paid' (Triggers Seller real-time view)
-        await updateDoc(codeDocRef, {
-          status: 'paid',
-          amount: amount,
-          payerEmail: currentUserData.email,
-          paidAt: now
-        });
+            if (mode === 'login') {
+                loginBtn.className = 'flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-white bg-slate-800 shadow';
+                regBtn.className = 'flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white';
+                btnText.innerText = 'Acessar Conta';
+            } else {
+                regBtn.className = 'flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-white bg-slate-800 shadow';
+                loginBtn.className = 'flex-1 py-2 text-sm font-semibold rounded-lg transition-all text-slate-400 hover:text-white';
+                btnText.innerText = 'Criar Nova Conta';
+            }
+        };
 
-        document.getElementById('modal-proximity-amount-prompt').classList.add('hidden');
-        document.getElementById('input-proximity-pay-amount').value = '';
+        // Auth Submit Handler
+        window.handleAuthSubmit = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value;
+            const btnText = document.getElementById('auth-btn-text');
+            const spinner = document.getElementById('auth-btn-spinner');
+            const infoBox = document.getElementById('register-verify-info');
 
-        // Display Receipt for Payer
-        displayReceipt({
-          amount: amount,
-          senderEmail: currentUserData.email,
-          recipientEmail: activeScannedCodeData.sellerEmail,
-          date: new Date(now).toLocaleString('pt-BR'),
-          safeStatus: 'Aproximação em Tempo Real ✔',
-          txId: 'VP-PROX-' + Math.random().toString(36).substr(2, 7).toUpperCase()
-        });
+            btnText.innerText = 'Aguarde...';
+            spinner.classList.remove('hidden');
 
-        activeScannedCodeData = null;
+            try {
+                if (activeAuthMode === 'register') {
+                    // Create User in Firebase Auth
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const newUser = userCredential.user;
 
-      } catch (error) {
-        console.error("Erro ao concluir pagamento por aproximação:", error);
-        showToast('Erro ao efetuar transferência por aproximação.', 'error');
-      }
-    });
+                    // Send Email Verification
+                    await sendEmailVerification(newUser);
+                    infoBox.classList.remove('hidden');
 
-    document.getElementById('btn-cancel-proximity-payment').addEventListener('click', () => {
-      document.getElementById('modal-proximity-amount-prompt').classList.add('hidden');
-      activeScannedCodeData = null;
-    });
+                    // Create user record in Firestore
+                    const payCode = generateProximityCode();
+                    await setDoc(doc(db, 'users', newUser.uid), {
+                        email: newUser.email,
+                        balance: 0.00,
+                        payCode: payCode,
+                        createdAt: serverTimestamp()
+                    });
 
-  </script>
+                    window.showToast('Conta criada com sucesso! Verifique seu e-mail.', 'success');
+                } else {
+                    // Sign In
+                    await signInWithEmailAndPassword(auth, email, password);
+                    window.showToast('Bem-vindo(a) de volta!', 'success');
+                }
+            } catch (err) {
+                console.error("Auth error:", err);
+                let msg = 'Falha na autenticação. Tente novamente.';
+                if (err.code === 'auth/email-already-in-use') msg = 'Este e-mail já está cadastrado.';
+                if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') msg = 'E-mail ou senha incorretos.';
+                if (err.code === 'auth/weak-password') msg = 'A senha deve ter pelo menos 6 caracteres.';
+                window.showToast(msg, 'error');
+            } finally {
+                btnText.innerText = activeAuthMode === 'login' ? 'Acessar Conta' : 'Criar Nova Conta';
+                spinner.classList.add('hidden');
+            }
+        };
+
+        // Resend Verification Email
+        window.resendVerificationEmail = async function() {
+            if (currentUser) {
+                try {
+                    await sendEmailVerification(currentUser);
+                    window.showToast('Link de verificação reenviado para seu e-mail!', 'success');
+                } catch (err) {
+                    window.showToast('Aguarde alguns instantes para reenviar.', 'error');
+                }
+            }
+        };
+
+        // Logout
+        window.handleLogout = async function() {
+            await signOut(auth);
+            window.showToast('Você saiu da sua conta.');
+        };
+
+        // Add Test Balance
+        window.addTestBalance = async function() {
+            if (!currentUser) return;
+            const newBal = (userData.balance || 0) + 100.00;
+            try {
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    balance: newBal
+                });
+                window.showToast('R$ 100,00 adicionados para testes!', 'success');
+            } catch (err) {
+                window.showToast('Erro ao atualizar saldo de teste.', 'error');
+            }
+        };
+
+        // Payment Modal Management
+        window.openPayModal = function() {
+            document.getElementById('modal-pay').classList.remove('hidden');
+        };
+
+        window.closePayModal = function() {
+            document.getElementById('modal-pay').classList.add('hidden');
+            document.getElementById('pay-via-code-form').classList.add('hidden');
+        };
+
+        window.switchPaySubTab = function(tab) {
+            const emailBtn = document.getElementById('pay-tab-email-btn');
+            const codeBtn = document.getElementById('pay-tab-code-btn');
+            const emailForm = document.getElementById('pay-email-form');
+            const codePanel = document.getElementById('pay-code-panel');
+
+            if (tab === 'email') {
+                emailBtn.className = 'flex-1 py-2 text-xs font-semibold rounded-lg transition-all text-white bg-slate-800 shadow';
+                codeBtn.className = 'flex-1 py-2 text-xs font-semibold rounded-lg transition-all text-slate-400 hover:text-white';
+                emailForm.classList.remove('hidden');
+                codePanel.classList.add('hidden');
+            } else {
+                codeBtn.className = 'flex-1 py-2 text-xs font-semibold rounded-lg transition-all text-white bg-slate-800 shadow';
+                emailBtn.className = 'flex-1 py-2 text-xs font-semibold rounded-lg transition-all text-slate-400 hover:text-white';
+                emailForm.classList.add('hidden');
+                codePanel.classList.remove('hidden');
+            }
+        };
+
+        window.togglePayViaCodeForm = function() {
+            const form = document.getElementById('pay-via-code-form');
+            form.classList.toggle('hidden');
+        };
+
+        window.copyProximityCode = function() {
+            const code = userData.payCode;
+            if (code) {
+                const tempInput = document.createElement('input');
+                tempInput.value = code;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                window.showToast('Código de aproximação copiado!', 'success');
+            }
+        };
+
+        // Process Payment (Shared Core Engine)
+        async function executeTransfer({ targetType, targetValue, amount }) {
+            if (!currentUser) return;
+
+            // Basic Client Validations
+            if (amount <= 0) {
+                window.showToast('Informe um valor válido para transferência.', 'error');
+                return;
+            }
+
+            if ((userData.balance || 0) < amount) {
+                window.showToast('Saldo insuficiente para esta transação.', 'error');
+                return;
+            }
+
+            // Close modal & Show Loading Screen
+            closePayModal();
+            document.getElementById('screen-loading').classList.remove('hidden');
+
+            try {
+                // Find Recipient in Firestore
+                const usersRef = collection(db, 'users');
+                let q;
+                if (targetType === 'email') {
+                    q = query(usersRef, where('email', '==', targetValue.toLowerCase().trim()));
+                } else {
+                    q = query(usersRef, where('payCode', '==', targetValue.trim()));
+                }
+
+                const querySnap = await getDocs(q);
+
+                if (querySnap.empty) {
+                    throw new Error('Destinatário não encontrado.');
+                }
+
+                let recipientDoc = null;
+                let recipientUid = null;
+
+                querySnap.forEach(d => {
+                    recipientDoc = d.data();
+                    recipientUid = d.id;
+                });
+
+                if (recipientDoc.email === currentUser.email) {
+                    throw new Error('Você não pode transferir dinheiro para si mesmo.');
+                }
+
+                // Update Balances
+                const newSenderBal = (userData.balance || 0) - amount;
+                const newRecipientBal = (recipientDoc.balance || 0) + amount;
+
+                // 1. Deduct Sender
+                await updateDoc(doc(db, 'users', currentUser.uid), {
+                    balance: newSenderBal
+                });
+
+                // 2. Add Recipient
+                await updateDoc(doc(db, 'users', recipientUid), {
+                    balance: newRecipientBal
+                });
+
+                // 3. Record Transaction Document
+                const txData = {
+                    senderEmail: currentUser.email,
+                    senderUid: currentUser.uid,
+                    recipientEmail: recipientDoc.email,
+                    recipientUid: recipientUid,
+                    amount: amount,
+                    type: targetType,
+                    timestamp: serverTimestamp()
+                };
+
+                const txDocRef = await addDoc(collection(db, 'transactions'), txData);
+
+                // Wait 1.2s for smooth loading experience
+                await new Promise(res => setTimeout(res, 1200));
+
+                // Hide Loading & Show Receipt
+                document.getElementById('screen-loading').classList.add('hidden');
+                showReceiptScreen({
+                    amount: amount,
+                    recipient: recipientDoc.email,
+                    txId: txDocRef.id.substring(0, 8).toUpperCase(),
+                    date: new Date().toLocaleString('pt-BR')
+                });
+
+            } catch (err) {
+                console.error("Transfer error:", err);
+                document.getElementById('screen-loading').classList.add('hidden');
+                window.showToast(err.message || 'Erro ao processar pagamento.', 'error');
+            }
+        }
+
+        // Handle Payment by Email Form Submit
+        window.handlePayByEmail = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('pay-email-input').value;
+            const amount = parseFloat(document.getElementById('pay-email-amount').value);
+
+            executeTransfer({
+                targetType: 'email',
+                targetValue: email,
+                amount: amount
+            });
+        };
+
+        // Handle Payment by Proximity Code Form Submit
+        window.handlePayByCode = function(e) {
+            e.preventDefault();
+            const code = document.getElementById('pay-target-code').value;
+            const amount = parseFloat(document.getElementById('pay-code-amount').value);
+
+            executeTransfer({
+                targetType: 'code',
+                targetValue: code,
+                amount: amount
+            });
+        };
+
+        // Show Receipt Screen
+        function showReceiptScreen({ amount, recipient, txId, date }) {
+            document.getElementById('receipt-amount').innerText = `R$ ${amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+            document.getElementById('receipt-recipient').innerText = recipient;
+            document.getElementById('receipt-date').innerText = date;
+            document.getElementById('receipt-txid').innerText = `#${txId}`;
+
+            document.getElementById('screen-receipt').classList.remove('hidden');
+        }
+
+        // Close Receipt and return to main screen
+        window.closeReceiptAndReturn = function() {
+            document.getElementById('screen-receipt').classList.add('hidden');
+            // Clear input fields
+            document.getElementById('pay-email-input').value = '';
+            document.getElementById('pay-email-amount').value = '';
+            document.getElementById('pay-target-code').value = '';
+            document.getElementById('pay-code-amount').value = '';
+        };
+    </script>
 </body>
 </html>
 ```
