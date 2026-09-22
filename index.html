@@ -58,7 +58,7 @@
                 <p class="text-sm text-slate-400 mt-1">Entre na sua conta para movimentar seu saldo</p>
             </div>
 
-            <!-- Notificação de QR Code detectado antes de logar -->
+            <!-- Notificação de QR Code detectado -->
             <div id="alertPendingCode" class="hidden mb-4 p-3 bg-purple-900/40 border border-purple-500/50 rounded-xl text-xs text-purple-200 flex items-center gap-2">
                 <i class="fa-solid fa-qrcode text-base text-purple-400"></i>
                 <span>QR Code detectado! Faça login para concluir o pagamento.</span>
@@ -97,9 +97,9 @@
 
             <div id="boxVerificacao" class="hidden mt-4 p-4 bg-amber-950/40 border border-amber-800/50 rounded-2xl text-center space-y-3">
                 <i class="fa-solid fa-paper-plane text-amber-400 text-2xl"></i>
-                <p class="text-xs text-amber-200">Enviamos um link de verificação para o seu e-mail. Por favor, confirme na sua caixa de entrada.</p>
+                <p class="text-xs text-amber-200">Enviamos um link de verificação para o seu e-mail.</p>
                 <button onclick="reenviarLinkVerificacao()" class="text-xs bg-amber-600/30 hover:bg-amber-600/50 text-amber-300 border border-amber-500/40 px-4 py-2 rounded-xl font-medium transition">
-                    Reenviar E-mail de Verificação
+                    Reenviar E-mail
                 </button>
             </div>
         </section>
@@ -115,9 +115,15 @@
                     <span class="text-2xl font-bold text-purple-400">R$</span>
                     <span id="txtSaldo" class="text-4xl font-extrabold tracking-tight">0,00</span>
                 </div>
+
+                <!-- Resumo de Gastos -->
+                <div class="mt-4 pt-3 border-t border-slate-700/60 flex justify-between items-center text-xs">
+                    <span class="text-slate-400">Total Gasto:</span>
+                    <span id="txtTotalGasto" class="font-bold text-rose-400">R$ 0,00</span>
+                </div>
             </div>
 
-            <!-- Botão Principal Único de Ação -->
+            <!-- Botões Principais de Ação -->
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="abrirModalPagamento()" class="py-4 px-4 bg-purple-600 hover:bg-purple-500 rounded-2xl font-bold text-sm transition shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 text-white">
                     <i class="fa-solid fa-paper-plane text-lg"></i>
@@ -130,10 +136,13 @@
                 </button>
             </div>
 
-            <!-- Histórico Recente -->
+            <!-- Histórico Recente de Pix -->
             <div class="card-glass p-5 rounded-3xl">
-                <h3 class="text-sm font-bold text-slate-300 mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-clock-rotate-left text-purple-400"></i> Movimentações Recentes
+                <h3 class="text-sm font-bold text-slate-300 mb-3 flex items-center justify-between">
+                    <span class="flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-purple-400"></i> Histórico de Pix
+                    </span>
+                    <span class="text-[11px] font-normal text-slate-400">Enviados e Recebidos</span>
                 </h3>
                 <div id="listHistorico" class="space-y-2 text-xs text-slate-400">
                     <p class="text-center py-4 italic text-slate-500">Nenhuma movimentação realizada ainda.</p>
@@ -178,8 +187,13 @@
             <!-- MODO APROXIMAÇÃO / QR CODE -->
             <div id="viewPagProx" class="hidden space-y-3">
                 
-                <!-- Leitor de Câmera (Opcional dentro do app) -->
-                <div id="qr-reader" class="hidden w-full rounded-2xl overflow-hidden border border-purple-500/50 mb-3"></div>
+                <!-- Leitor de Câmera -->
+                <div id="boxCameraScanner" class="hidden space-y-2">
+                    <div id="reader" class="w-full rounded-2xl overflow-hidden border border-purple-500/50 bg-black"></div>
+                    <button onclick="pararCameraScanner()" class="w-full py-2 bg-rose-900/40 border border-rose-700 text-rose-300 rounded-xl text-xs font-semibold">
+                        <i class="fa-solid fa-stop mr-1"></i> Fechar Câmera
+                    </button>
+                </div>
 
                 <div id="stepProxCode">
                     <label class="block text-xs text-slate-300 mb-1">Código de Aproximação (6 dígitos)</label>
@@ -190,8 +204,8 @@
                         </button>
                     </div>
                     
-                    <button onclick="iniciarCameraScanner()" class="w-full mt-3 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-semibold text-purple-300 flex items-center justify-center gap-2 transition">
-                        <i class="fa-solid fa-camera"></i> Escanear com a Câmera
+                    <button onclick="iniciarCameraScanner()" class="w-full mt-3 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-semibold text-purple-300 flex items-center justify-center gap-2 transition">
+                        <i class="fa-solid fa-camera text-sm"></i> Abrir Câmera para Escanear
                     </button>
                 </div>
 
@@ -215,7 +229,7 @@
     </div>
 
 
-    <!-- MODAL DE RECEBER (QR CODE / APROXIMAÇÃO) -->
+    <!-- MODAL DE RECEBER (QR CODE) -->
     <div id="modalReceber" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="card-glass max-w-sm w-full p-6 rounded-3xl text-center relative space-y-4">
             <button onclick="fecharModalReceber()" class="absolute top-4 right-4 w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-400">
@@ -223,7 +237,7 @@
             </button>
 
             <h3 class="text-lg font-bold text-slate-100">Receber por Aproximação</h3>
-            <p class="text-xs text-slate-400">Peça para a outra pessoa escanear o QR Code abaixo com a câmera do celular ou digitar o código.</p>
+            <p class="text-xs text-slate-400">Mostre este QR Code para a pessoa escanear ou informe o código abaixo.</p>
 
             <div class="bg-white p-4 rounded-2xl w-48 h-48 mx-auto flex items-center justify-center shadow-lg">
                 <img id="imgQrCode" src="" alt="QR Code de Pagamento" class="w-full h-full object-contain">
@@ -233,15 +247,11 @@
                 <span class="text-[10px] text-slate-500 block uppercase font-semibold">Código de 6 dígitos</span>
                 <span id="txtDisplayCodigo" class="text-2xl font-mono font-extrabold text-purple-400 tracking-widest">------</span>
             </div>
-
-            <p class="text-[11px] text-purple-300/80 bg-purple-950/30 p-2 rounded-lg border border-purple-800/30">
-                <i class="fa-solid fa-bolt mr-1"></i> Ao escanear o QR Code, a tela de pagamento abrirá automaticamente no celular da pessoa!
-            </p>
         </div>
     </div>
 
 
-    <!-- MODAL DE PROCESSANDO (CARREGANDO) -->
+    <!-- MODAL DE PROCESSANDO -->
     <div id="modalProcessando" class="hidden fixed inset-0 bg-black/90 backdrop-blur-lg z-50 flex flex-col items-center justify-center p-4 text-center">
         <div class="w-20 h-20 border-4 border-purple-600/30 border-t-purple-500 rounded-full loader-spin mb-6"></div>
         <h3 class="text-xl font-bold text-white mb-1">Processando Pagamento...</h3>
@@ -249,7 +259,7 @@
     </div>
 
 
-    <!-- MODAL COMPROVANTE DE SUCESSO -->
+    <!-- MODAL COMPROVANTE -->
     <div id="modalComprovante" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="card-glass max-w-sm w-full p-6 rounded-3xl text-center space-y-4 border border-emerald-500/30">
             <div class="w-16 h-16 bg-emerald-500/20 border border-emerald-500/40 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-3xl">
@@ -289,7 +299,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, collection, addDoc, query, where, getDocs, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, collection, addDoc, query, where, getDocs, serverTimestamp, runTransaction, or } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         // Configuração do Firebase
         const firebaseConfig = {
@@ -308,16 +318,16 @@
 
         let modoAuth = 'login';
         let unsubscribeUser = null;
+        let unsubscribeHist = null;
         let codigoProxValidado = null;
-        let html5QrcodeScanner = null;
+        let html5QrCodeObj = null;
 
-        // 1. CHECAR SE O SITE FOI ABRTO POR QR CODE (?code=XXXXXX)
+        // 1. CHECAR SE O SITE FOI ABERTO POR QR CODE
         function checarParametroUrlQrCode() {
             const urlParams = new URLSearchParams(window.location.search);
             const code = urlParams.get('code') || urlParams.get('c');
             if (code) {
                 sessionStorage.setItem('pending_pay_code', code);
-                // Limpa a URL para não ficar reexecutando ao atualizar
                 window.history.replaceState({}, document.title, window.location.pathname);
                 document.getElementById('alertPendingCode').classList.remove('hidden');
             }
@@ -332,21 +342,21 @@
                 document.getElementById('userHeaderInfo').classList.remove('hidden');
                 document.getElementById('userEmailBadge').innerText = user.email;
 
-                // Escutar dados do usuário no Firestore em tempo real
+                // Escutar saldo
                 const userRef = doc(db, "users", user.uid);
                 unsubscribeUser = onSnapshot(userRef, (docSnap) => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
                         document.getElementById('txtSaldo').innerText = (data.balance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                     } else {
-                        // Se o documento não existe ainda, cria com R$ 0,00
                         setDoc(userRef, { email: user.email, balance: 0.00 });
                     }
                 });
 
+                // Carregar histórico completo (enviados e recebidos)
                 carregarHistorico(user.uid);
 
-                // SE TIVER CÓDIGO DE QR CODE PENDENTE, ABRE DIRETO A TELA DE PAGAMENTO!
+                // Executar pendente se veio via QR Code
                 const pendingCode = sessionStorage.getItem('pending_pay_code');
                 if (pendingCode) {
                     sessionStorage.removeItem('pending_pay_code');
@@ -361,13 +371,14 @@
 
             } else {
                 if (unsubscribeUser) unsubscribeUser();
+                if (unsubscribeHist) unsubscribeHist();
                 document.getElementById('secAuth').classList.remove('hidden');
                 document.getElementById('secDashboard').classList.add('hidden');
                 document.getElementById('userHeaderInfo').classList.add('hidden');
             }
         });
 
-        // 3. AUTENTICAÇÃO (LOGIN / CADASTRO)
+        // 3. ABAS LOGIN / CADASTRO
         window.alternarAbaAuth = (aba) => {
             modoAuth = aba;
             const btnLogin = document.getElementById('tabBtnLogin');
@@ -404,9 +415,8 @@
                         createdAt: serverTimestamp()
                     });
                     await sendEmailVerification(userCred.user);
-                    succDiv.innerText = "Conta criada com sucesso! Enviamos um e-mail de verificação.";
+                    succDiv.innerText = "Conta criada! Verifique seu e-mail.";
                     succDiv.classList.remove('hidden');
-                    document.getElementById('boxVerificacao').classList.remove('hidden');
                 } else {
                     await signInWithEmailAndPassword(auth, email, senha);
                 }
@@ -418,14 +428,13 @@
 
         window.fazerLogout = () => signOut(auth);
 
-        // 4. RECEBER / GERAR QR CODE COM LINK DIRETO
+        // 4. RECEBER / GERAR QR CODE
         window.gerarCodigoRecebimento = async () => {
             const user = auth.currentUser;
             if (!user) return;
 
             const code = Math.floor(100000 + Math.random() * 900000).toString();
 
-            // Salva o código no Firestore
             await addDoc(collection(db, "proximity_codes"), {
                 code: code,
                 recipientEmail: user.email,
@@ -434,7 +443,6 @@
                 active: true
             });
 
-            // Monta o link que abrirá o app e preencherá o código
             const payUrl = `${window.location.origin}${window.location.pathname}?code=${code}`;
 
             document.getElementById('txtDisplayCodigo').innerText = code;
@@ -445,7 +453,7 @@
 
         window.fecharModalReceber = () => document.getElementById('modalReceber').classList.add('hidden');
 
-        // 5. MODAL DE PAGAMENTO & NAVEGAÇÃO
+        // 5. MODAL DE PAGAMENTO
         window.abrirModalPagamento = () => {
             document.getElementById('modalPagamento').classList.remove('hidden');
             document.getElementById('msgPayError').classList.add('hidden');
@@ -453,9 +461,7 @@
 
         window.fecharModalPagamento = () => {
             document.getElementById('modalPagamento').classList.add('hidden');
-            if (html5QrcodeScanner) {
-                try { html5QrcodeScanner.clear(); } catch(e){}
-            }
+            pararCameraScanner();
         };
 
         window.mudarAbaPagamento = (modo) => {
@@ -469,6 +475,7 @@
                 btnProx.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
                 viewEmail.classList.remove('hidden');
                 viewProx.classList.add('hidden');
+                pararCameraScanner();
             } else {
                 btnProx.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-purple-600 text-white transition";
                 btnEmail.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
@@ -477,7 +484,7 @@
             }
         };
 
-        // 6. BUSCAR CÓDIGO DE APROXIMAÇÃO
+        // 6. BUSCAR CÓDIGO
         window.buscarCodigoAproximacao = async (forcedCode = null) => {
             const code = forcedCode || document.getElementById('inputProxCodigo').value.trim();
             const errDiv = document.getElementById('msgPayError');
@@ -494,14 +501,14 @@
                 const snap = await getDocs(q);
 
                 if (snap.empty) {
-                    errDiv.innerText = "Código de aproximação não encontrado ou já expirado.";
+                    errDiv.innerText = "Código de aproximação inválido ou já utilizado.";
                     errDiv.classList.remove('hidden');
                     return;
                 }
 
                 const docData = snap.docs[0].data();
                 if (docData.recipientUid === auth.currentUser.uid) {
-                    errDiv.innerText = "Você não pode transferir dinheiro para você mesmo!";
+                    errDiv.innerText = "Você não pode transferir dinheiro para si mesmo!";
                     errDiv.classList.remove('hidden');
                     return;
                 }
@@ -521,31 +528,57 @@
             }
         };
 
-        // 7. CÂMERA SCANNER INTERNA
-        window.iniciarCameraScanner = () => {
-            const readerDiv = document.getElementById('qr-reader');
-            readerDiv.classList.remove('hidden');
-            html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: { width: 220, height: 220 } }, false);
-            html5QrcodeScanner.render((decodedText) => {
-                let code = decodedText;
-                if (decodedText.includes('code=')) {
-                    const url = new URL(decodedText);
-                    code = url.searchParams.get('code') || decodedText;
-                }
-                html5QrcodeScanner.clear();
-                readerDiv.classList.add('hidden');
-                document.getElementById('inputProxCodigo').value = code;
-                buscarCodigoAproximacao(code);
-            });
+        // 7. CÂMERA SCANNER CORRIGIDA
+        window.iniciarCameraScanner = async () => {
+            const boxCam = document.getElementById('boxCameraScanner');
+            boxCam.classList.remove('hidden');
+
+            if (!html5QrCodeObj) {
+                html5QrCodeObj = new Html5Qrcode("reader");
+            }
+
+            const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+
+            try {
+                await html5QrCodeObj.start(
+                    { facingMode: "environment" },
+                    config,
+                    (decodedText) => {
+                        let code = decodedText;
+                        if (decodedText.includes('code=')) {
+                            const url = new URL(decodedText);
+                            code = url.searchParams.get('code') || decodedText;
+                        }
+                        pararCameraScanner();
+                        document.getElementById('inputProxCodigo').value = code;
+                        buscarCodigoAproximacao(code);
+                    },
+                    (errorMessage) => {
+                        // Ignora erros de frame contínuos
+                    }
+                );
+            } catch (err) {
+                alert("Erro ao acessar a câmera: " + err);
+                boxCam.classList.add('hidden');
+            }
         };
 
-        // 8. EXECUTAR TRANSFERÊNCIAS (TRANSAÇÃO NO FIRESTORE)
+        window.pararCameraScanner = () => {
+            if (html5QrCodeObj && html5QrCodeObj.isScanning) {
+                html5QrCodeObj.stop().then(() => {
+                    document.getElementById('boxCameraScanner').classList.add('hidden');
+                }).catch(err => console.error(err));
+            } else {
+                document.getElementById('boxCameraScanner').classList.add('hidden');
+            }
+        };
+
+        // 8. EXECUTAR PAGAMENTOS
         window.iniciarTransferenciaEmail = async () => {
             const email = document.getElementById('payDestEmail').value.trim();
             const val = parseFloat(document.getElementById('payValEmail').value);
-            if (!email || isNaN(val) || val <= 0) return alert("Preencha o e-mail e valor corretamente!");
+            if (!email || isNaN(val) || val <= 0) return alert("Preencha e-mail e valor corretamente!");
             
-            // Buscar UID do destinatário por e-mail
             const q = query(collection(db, "users"), where("email", "==", email));
             const snap = await getDocs(q);
             if (snap.empty) return alert("Destinatário não encontrado!");
@@ -582,16 +615,13 @@
                     const senderBalance = senderSnap.data().balance || 0;
                     if (senderBalance < valor) throw new Error("Saldo insuficiente!");
 
-                    // Atualiza Saldos
                     transaction.update(senderRef, { balance: senderBalance - valor });
                     transaction.update(destRef, { balance: (destSnap.data().balance || 0) + valor });
 
-                    // Desativa o código de aproximação usado
                     if (proxDocId) {
                         transaction.update(doc(db, "proximity_codes", proxDocId), { active: false });
                     }
 
-                    // Registra Histórico
                     const txRef = doc(collection(db, "transactions"));
                     transaction.set(txRef, {
                         senderUid,
@@ -605,7 +635,6 @@
 
                 document.getElementById('modalProcessando').classList.add('hidden');
                 
-                // Exibir Comprovante
                 document.getElementById('compPara').innerText = destEmail;
                 document.getElementById('compValor').innerText = "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                 document.getElementById('compData').innerText = new Date().toLocaleString('pt-BR');
@@ -619,31 +648,65 @@
 
         window.fecharModalComprovante = () => document.getElementById('modalComprovante').classList.add('hidden');
 
-        // 9. CARREGAR HISTÓRICO
+        // 9. CARREGAR HISTÓRICO COMPLETO (ENVIADOS E RECEBIDOS)
         function carregarHistorico(uid) {
-            const q = query(collection(db, "transactions"), where("senderUid", "==", uid));
-            onSnapshot(q, (snap) => {
+            const q = query(
+                collection(db, "transactions"), 
+                or(where("senderUid", "==", uid), where("destUid", "==", uid))
+            );
+
+            unsubscribeHist = onSnapshot(q, (snap) => {
                 const list = document.getElementById('listHistorico');
                 if (snap.empty) {
                     list.innerHTML = `<p class="text-center py-4 italic text-slate-500">Nenhuma movimentação realizada ainda.</p>`;
+                    document.getElementById('txtTotalGasto').innerText = "R$ 0,00";
                     return;
                 }
+
                 list.innerHTML = "";
-                snap.forEach((doc) => {
-                    const data = doc.data();
-                    list.innerHTML += `
-                        <div class="flex justify-between items-center p-3 bg-slate-900/60 rounded-xl border border-slate-800">
-                            <div>
-                                <span class="font-bold text-slate-200 block">${data.destEmail}</span>
-                                <span class="text-[10px] text-slate-500">Transferência Enviada</span>
+                let totalGasto = 0;
+
+                snap.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const souEnviador = data.senderUid === uid;
+
+                    if (souEnviador) {
+                        totalGasto += data.value || 0;
+                        list.innerHTML += `
+                            <div class="flex justify-between items-center p-3 bg-slate-900/60 rounded-xl border border-rose-950/40">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-7 h-7 rounded-lg bg-rose-500/20 text-rose-400 flex items-center justify-center text-xs">
+                                        <i class="fa-solid fa-arrow-up font-bold"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-bold text-slate-200 block text-xs">${data.destEmail}</span>
+                                        <span class="text-[10px] text-slate-400">Pix Enviado</span>
+                                    </div>
+                                </div>
+                                <span class="font-bold text-rose-400 text-xs">- R$ ${data.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                             </div>
-                            <span class="font-bold text-rose-400">- R$ ${data.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        list.innerHTML += `
+                            <div class="flex justify-between items-center p-3 bg-slate-900/60 rounded-xl border border-emerald-950/40">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs">
+                                        <i class="fa-solid fa-arrow-down font-bold"></i>
+                                    </div>
+                                    <div>
+                                        <span class="font-bold text-slate-200 block text-xs">${data.senderEmail}</span>
+                                        <span class="text-[10px] text-slate-400">Pix Recebido</span>
+                                    </div>
+                                </div>
+                                <span class="font-bold text-emerald-400 text-xs">+ R$ ${data.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                            </div>
+                        `;
+                    }
                 });
+
+                document.getElementById('txtTotalGasto').innerText = "R$ " + totalGasto.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
             });
         }
     </script>
 </body>
 </html>
-
