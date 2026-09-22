@@ -48,7 +48,7 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="max-w-md w-full mx-auto p-4 flex-1 flex flex-col justify-center">
 
-        <!-- 1. TELA DE AUTENTICAÇÃO (LOGIN / CADASTRO) -->
+        <!-- 1. TELA DE AUTENTICAÇÃO -->
         <section id="secAuth" class="card-glass p-6 rounded-3xl shadow-2xl">
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-purple-600/20 border border-purple-500/30 rounded-2xl flex items-center justify-center mx-auto mb-3 text-3xl">
@@ -58,13 +58,11 @@
                 <p class="text-sm text-slate-400 mt-1">Entre na sua conta para movimentar seu saldo</p>
             </div>
 
-            <!-- Notificação de QR Code detectado -->
             <div id="alertPendingCode" class="hidden mb-4 p-3 bg-purple-900/40 border border-purple-500/50 rounded-xl text-xs text-purple-200 flex items-center gap-2">
                 <i class="fa-solid fa-qrcode text-base text-purple-400"></i>
                 <span>QR Code detectado! Faça login para concluir o pagamento.</span>
             </div>
 
-            <!-- Abas Login / Cadastro -->
             <div class="flex bg-slate-900/60 p-1 rounded-xl mb-6 border border-slate-800">
                 <button id="tabBtnLogin" onclick="alternarAbaAuth('login')" class="flex-1 py-2 text-xs font-semibold rounded-lg bg-purple-600 text-white transition">Login</button>
                 <button id="tabBtnCad" onclick="alternarAbaAuth('cad')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition">Criar Conta</button>
@@ -94,20 +92,11 @@
                     <span>Entrar na Conta</span>
                 </button>
             </form>
-
-            <div id="boxVerificacao" class="hidden mt-4 p-4 bg-amber-950/40 border border-amber-800/50 rounded-2xl text-center space-y-3">
-                <i class="fa-solid fa-paper-plane text-amber-400 text-2xl"></i>
-                <p class="text-xs text-amber-200">Enviamos um link de verificação para o seu e-mail.</p>
-                <button onclick="reenviarLinkVerificacao()" class="text-xs bg-amber-600/30 hover:bg-amber-600/50 text-amber-300 border border-amber-500/40 px-4 py-2 rounded-xl font-medium transition">
-                    Reenviar E-mail
-                </button>
-            </div>
         </section>
 
 
-        <!-- 2. PAINEL PRINCIPAL (APÓS LOGIN) -->
+        <!-- 2. PAINEL PRINCIPAL -->
         <section id="secDashboard" class="hidden space-y-5">
-            <!-- Card de Saldo -->
             <div class="card-glass p-6 rounded-3xl relative overflow-hidden glow-purple">
                 <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-purple-600/10 rounded-full blur-2xl"></div>
                 <span class="text-xs text-slate-400 font-medium uppercase tracking-wider">Seu Saldo Disponível</span>
@@ -116,14 +105,12 @@
                     <span id="txtSaldo" class="text-4xl font-extrabold tracking-tight">0,00</span>
                 </div>
 
-                <!-- Resumo de Gastos -->
                 <div class="mt-4 pt-3 border-t border-slate-700/60 flex justify-between items-center text-xs">
                     <span class="text-slate-400">Total Gasto:</span>
                     <span id="txtTotalGasto" class="font-bold text-rose-400">R$ 0,00</span>
                 </div>
             </div>
 
-            <!-- Botões Principais de Ação -->
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="abrirModalPagamento()" class="py-4 px-4 bg-purple-600 hover:bg-purple-500 rounded-2xl font-bold text-sm transition shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2 text-white">
                     <i class="fa-solid fa-paper-plane text-lg"></i>
@@ -136,7 +123,6 @@
                 </button>
             </div>
 
-            <!-- Histórico Recente de Pix -->
             <div class="card-glass p-5 rounded-3xl">
                 <h3 class="text-sm font-bold text-slate-300 mb-3 flex items-center justify-between">
                     <span class="flex items-center gap-2">
@@ -163,7 +149,6 @@
                 <i class="fa-solid fa-wallet text-purple-400"></i> Área de Pagamento
             </h3>
 
-            <!-- Opções de Modo de Pagamento -->
             <div class="flex bg-slate-900/80 p-1 rounded-xl border border-slate-800">
                 <button id="btnModoEmail" onclick="mudarAbaPagamento('email')" class="flex-1 py-2 text-xs font-semibold rounded-lg bg-purple-600 text-white transition">Por E-mail</button>
                 <button id="btnModoProx" onclick="mudarAbaPagamento('aproximacao')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition">Aproximação / QR Code</button>
@@ -186,8 +171,6 @@
 
             <!-- MODO APROXIMAÇÃO / QR CODE -->
             <div id="viewPagProx" class="hidden space-y-3">
-                
-                <!-- Leitor de Câmera -->
                 <div id="boxCameraScanner" class="hidden space-y-2">
                     <div id="reader" class="w-full rounded-2xl overflow-hidden border border-purple-500/50 bg-black"></div>
                     <button onclick="pararCameraScanner()" class="w-full py-2 bg-rose-900/40 border border-rose-700 text-rose-300 rounded-xl text-xs font-semibold">
@@ -224,12 +207,12 @@
                 </div>
             </div>
 
-            <div id="msgPayError" class="hidden text-xs text-rose-400 bg-rose-950/50 border border-rose-800/60 p-3 rounded-xl"></div>
+            <div id="msgPayError" class="hidden text-xs text-rose-400 bg-rose-950/50 border border-rose-800/60 p-3 rounded-xl font-bold text-center"></div>
         </div>
     </div>
 
 
-    <!-- MODAL DE RECEBER (QR CODE) -->
+    <!-- MODAL DE RECEBER (QR CODE) COM NOTIFICAÇÃO EM TEMPO REAL -->
     <div id="modalReceber" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
         <div class="card-glass max-w-sm w-full p-6 rounded-3xl text-center relative space-y-4">
             <button onclick="fecharModalReceber()" class="absolute top-4 right-4 w-8 h-8 bg-slate-800 hover:bg-slate-700 rounded-full flex items-center justify-center text-slate-400">
@@ -238,6 +221,12 @@
 
             <h3 class="text-lg font-bold text-slate-100">Receber por Aproximação</h3>
             <p class="text-xs text-slate-400">Mostre este QR Code para a pessoa escanear ou informe o código abaixo.</p>
+
+            <!-- AVISO EM TEMPO REAL QUANDO ALGUÉM ESCANEAR -->
+            <div id="statusScanBox" class="hidden p-3 bg-amber-500/20 border border-amber-500/50 rounded-xl text-xs text-amber-300 font-bold animate-pulse flex items-center justify-center gap-2">
+                <i class="fa-solid fa-eye text-base"></i>
+                <span id="txtStatusScan">Uma pessoa escaneou o QR code!</span>
+            </div>
 
             <div class="bg-white p-4 rounded-2xl w-48 h-48 mx-auto flex items-center justify-center shadow-lg">
                 <img id="imgQrCode" src="" alt="QR Code de Pagamento" class="w-full h-full object-contain">
@@ -254,7 +243,7 @@
     <!-- MODAL DE PROCESSANDO -->
     <div id="modalProcessando" class="hidden fixed inset-0 bg-black/90 backdrop-blur-lg z-50 flex flex-col items-center justify-center p-4 text-center">
         <div class="w-20 h-20 border-4 border-purple-600/30 border-t-purple-500 rounded-full loader-spin mb-6"></div>
-        <h3 class="text-xl font-bold text-white mb-1">Processando Pagamento...</h3>
+        <h3 class="text-xl font-bold text-white mb-1">Processando...</h3>
         <p class="text-xs text-slate-400">Validando transação e transferindo saldo com segurança</p>
     </div>
 
@@ -265,7 +254,7 @@
             <div class="w-16 h-16 bg-emerald-500/20 border border-emerald-500/40 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-3xl">
                 <i class="fa-solid fa-check"></i>
             </div>
-            <h3 class="text-xl font-extrabold text-white">Pagamento Realizado!</h3>
+            <h3 class="text-xl font-extrabold text-white">Pago!</h3>
             
             <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 text-left space-y-2 text-xs">
                 <div class="flex justify-between text-slate-400">
@@ -319,6 +308,7 @@
         let modoAuth = 'login';
         let unsubscribeUser = null;
         let unsubscribeHist = null;
+        let unsubscribeCodeMonitor = null;
         let codigoProxValidado = null;
         let html5QrCodeObj = null;
 
@@ -342,7 +332,6 @@
                 document.getElementById('userHeaderInfo').classList.remove('hidden');
                 document.getElementById('userEmailBadge').innerText = user.email;
 
-                // Escutar saldo
                 const userRef = doc(db, "users", user.uid);
                 unsubscribeUser = onSnapshot(userRef, (docSnap) => {
                     if (docSnap.exists()) {
@@ -353,10 +342,8 @@
                     }
                 });
 
-                // Carregar histórico completo (enviados e recebidos)
                 carregarHistorico(user.uid);
 
-                // Executar pendente se veio via QR Code
                 const pendingCode = sessionStorage.getItem('pending_pay_code');
                 if (pendingCode) {
                     sessionStorage.removeItem('pending_pay_code');
@@ -428,30 +415,51 @@
 
         window.fazerLogout = () => signOut(auth);
 
-        // 4. RECEBER / GERAR QR CODE
+        // 4. RECEBER / GERAR QR CODE COM MONITOR EM TEMPO REAL
         window.gerarCodigoRecebimento = async () => {
             const user = auth.currentUser;
             if (!user) return;
 
             const code = Math.floor(100000 + Math.random() * 900000).toString();
 
-            await addDoc(collection(db, "proximity_codes"), {
+            const docRef = await addDoc(collection(db, "proximity_codes"), {
                 code: code,
                 recipientEmail: user.email,
                 recipientUid: user.uid,
                 createdAt: serverTimestamp(),
-                active: true
+                active: true,
+                status: 'created'
             });
 
             const payUrl = `${window.location.origin}${window.location.pathname}?code=${code}`;
 
             document.getElementById('txtDisplayCodigo').innerText = code;
             document.getElementById('imgQrCode').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(payUrl)}`;
-            
+            document.getElementById('statusScanBox').classList.add('hidden');
             document.getElementById('modalReceber').classList.remove('hidden');
+
+            // ESCUTAR EM TEMPO REAL SE ALGUÉM ESCANEOU OU PAGOU ESTE CÓDIGO!
+            if (unsubscribeCodeMonitor) unsubscribeCodeMonitor();
+            unsubscribeCodeMonitor = onSnapshot(doc(db, "proximity_codes", docRef.id), (snap) => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    if (data.status === 'scanned') {
+                        document.getElementById('txtStatusScan').innerText = "Uma pessoa escaneou o QR code!";
+                        document.getElementById('statusScanBox').className = "p-3 bg-amber-500/20 border border-amber-500/50 rounded-xl text-xs text-amber-300 font-bold animate-pulse flex items-center justify-center gap-2";
+                        document.getElementById('statusScanBox').classList.remove('hidden');
+                    } else if (data.status === 'paid') {
+                        document.getElementById('txtStatusScan').innerText = `Pago! Você recebeu R$ ${data.paidValue.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+                        document.getElementById('statusScanBox').className = "p-3 bg-emerald-500/20 border border-emerald-500/50 rounded-xl text-xs text-emerald-300 font-bold flex items-center justify-center gap-2";
+                        document.getElementById('statusScanBox').classList.remove('hidden');
+                    }
+                }
+            });
         };
 
-        window.fecharModalReceber = () => document.getElementById('modalReceber').classList.add('hidden');
+        window.fecharModalReceber = () => {
+            document.getElementById('modalReceber').classList.add('hidden');
+            if (unsubscribeCodeMonitor) unsubscribeCodeMonitor();
+        };
 
         // 5. MODAL DE PAGAMENTO
         window.abrirModalPagamento = () => {
@@ -484,7 +492,7 @@
             }
         };
 
-        // 6. BUSCAR CÓDIGO
+        // 6. BUSCAR E NOTIFICAR ESCANEAMENTO DE CÓDIGO
         window.buscarCodigoAproximacao = async (forcedCode = null) => {
             const code = forcedCode || document.getElementById('inputProxCodigo').value.trim();
             const errDiv = document.getElementById('msgPayError');
@@ -506,15 +514,23 @@
                     return;
                 }
 
-                const docData = snap.docs[0].data();
+                const docSnap = snap.docs[0];
+                const docData = docSnap.data();
+
                 if (docData.recipientUid === auth.currentUser.uid) {
                     errDiv.innerText = "Você não pode transferir dinheiro para si mesmo!";
                     errDiv.classList.remove('hidden');
                     return;
                 }
 
+                // Avisa o remetente no banco de dados que a pessoa escaneou!
+                await updateDoc(doc(db, "proximity_codes", docSnap.id), {
+                    status: 'scanned',
+                    scannedBy: auth.currentUser.email
+                });
+
                 codigoProxValidado = {
-                    docId: snap.docs[0].id,
+                    docId: docSnap.id,
                     ...docData
                 };
 
@@ -528,7 +544,7 @@
             }
         };
 
-        // 7. CÂMERA SCANNER CORRIGIDA
+        // 7. CÂMERA SCANNER
         window.iniciarCameraScanner = async () => {
             const boxCam = document.getElementById('boxCameraScanner');
             boxCam.classList.remove('hidden');
@@ -553,9 +569,7 @@
                         document.getElementById('inputProxCodigo').value = code;
                         buscarCodigoAproximacao(code);
                     },
-                    (errorMessage) => {
-                        // Ignora erros de frame contínuos
-                    }
+                    (errorMessage) => {}
                 );
             } catch (err) {
                 alert("Erro ao acessar a câmera: " + err);
@@ -573,7 +587,7 @@
             }
         };
 
-        // 8. EXECUTAR PAGAMENTOS
+        // 8. EXECUTAR PAGAMENTOS COM VERIFICAÇÃO DE SALDO E PROCESSANDO
         window.iniciarTransferenciaEmail = async () => {
             const email = document.getElementById('payDestEmail').value.trim();
             const val = parseFloat(document.getElementById('payValEmail').value);
@@ -596,10 +610,17 @@
 
         async function executarPagamento(destUid, destEmail, valor, proxDocId = null) {
             const senderUid = auth.currentUser.uid;
+            const errDiv = document.getElementById('msgPayError');
+            errDiv.classList.add('hidden');
+
             if (senderUid === destUid) return alert("Você não pode pagar a si mesmo!");
 
+            // Exibe a tela de processamento
             fecharModalPagamento();
             document.getElementById('modalProcessando').classList.remove('hidden');
+
+            // Simula um tempo de carregamento para efeito visual
+            await new Promise(resolve => setTimeout(resolve, 1200));
 
             try {
                 await runTransaction(db, async (transaction) => {
@@ -613,13 +634,21 @@
                     if (!destSnap.exists()) throw new Error("Conta do destinatário não encontrada.");
 
                     const senderBalance = senderSnap.data().balance || 0;
-                    if (senderBalance < valor) throw new Error("Saldo insuficiente!");
+                    
+                    // VERIFICAÇÃO DE SALDO INSUFICIENTE
+                    if (senderBalance < valor) {
+                        throw new Error("erro, você não tem dinheiro na conta.");
+                    }
 
                     transaction.update(senderRef, { balance: senderBalance - valor });
                     transaction.update(destRef, { balance: (destSnap.data().balance || 0) + valor });
 
                     if (proxDocId) {
-                        transaction.update(doc(db, "proximity_codes", proxDocId), { active: false });
+                        transaction.update(doc(db, "proximity_codes", proxDocId), { 
+                            active: false,
+                            status: 'paid',
+                            paidValue: valor
+                        });
                     }
 
                     const txRef = doc(collection(db, "transactions"));
@@ -635,6 +664,7 @@
 
                 document.getElementById('modalProcessando').classList.add('hidden');
                 
+                // Exibe o Comprovante "Pago!"
                 document.getElementById('compPara').innerText = destEmail;
                 document.getElementById('compValor').innerText = "R$ " + valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
                 document.getElementById('compData').innerText = new Date().toLocaleString('pt-BR');
@@ -642,13 +672,17 @@
 
             } catch (err) {
                 document.getElementById('modalProcessando').classList.add('hidden');
-                alert("Erro na transação: " + err.message);
+                
+                // Reabre a modal com a mensagem exata de erro
+                abrirModalPagamento();
+                errDiv.innerText = err.message;
+                errDiv.classList.remove('hidden');
             }
         }
 
         window.fecharModalComprovante = () => document.getElementById('modalComprovante').classList.add('hidden');
 
-        // 9. CARREGAR HISTÓRICO COMPLETO (ENVIADOS E RECEBIDOS)
+        // 9. CARREGAR HISTÓRICO
         function carregarHistorico(uid) {
             const q = query(
                 collection(db, "transactions"), 
