@@ -208,15 +208,6 @@
                     <span class="text-lg font-bold text-cyan-400">R$</span>
                     <h2 id="balance-amount" class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">0,00</h2>
                 </div>
-
-                <!-- Demo Balance Helper Button -->
-                <div class="mt-4 pt-4 border-t border-slate-800 flex items-center justify-between">
-                    <span class="text-[11px] text-slate-400">Precisando testar envios?</span>
-                    <button onclick="addTestBalance()" class="px-3 py-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-xs font-semibold transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-plus-circle text-xs"></i>
-                        + R$ 100,00 Teste
-                    </button>
-                </div>
             </div>
 
             <!-- Main Pay Action Button (Big & Highlighted) -->
@@ -741,20 +732,6 @@
         window.handleLogout = async function() {
             await signOut(auth);
             window.showToast('Você saiu da sua conta.');
-        };
-
-        // Add Test Balance
-        window.addTestBalance = async function() {
-            if (!currentUser) return;
-            const newBal = (userData.balance || 0) + 100.00;
-            try {
-                await updateDoc(doc(db, 'users', currentUser.uid), {
-                    balance: newBal
-                });
-                window.showToast('R$ 100,00 adicionados para testes!', 'success');
-            } catch (err) {
-                window.showToast('Erro ao atualizar saldo de teste.', 'error');
-            }
         };
 
         // Payment Modal Management
