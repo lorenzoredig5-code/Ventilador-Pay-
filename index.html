@@ -17,10 +17,6 @@
       backdrop-filter: blur(12px);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .otp-input:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4">
@@ -110,7 +106,7 @@
             </div>
             <div>
               <label class="block text-xs font-semibold text-slate-300 mb-1">PIN de Transação (4 dígitos)</label>
-              <input type="password" maxlength="4" id="reg-pin" pattern="[0-9]{4}" required placeholder="Ex: 8392" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-center text-white focus:outline-none focus:border-cyan-500">
+              <input type="password" maxlength="4" id="reg-pin" pattern="[0-9]{4}" required placeholder="Ex: 8392" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-center text-white focus:outline-none focus:border-cyan-500">
             </div>
           </div>
 
@@ -120,7 +116,7 @@
           </div>
 
           <button type="submit" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold py-3 rounded-xl shadow-lg shadow-cyan-500/20 transition active:scale-[0.98] mt-2">
-            Continuar para Verificação <i class="fa-solid fa-arrow-right ml-1"></i>
+            Enviar Link de Verificação <i class="fa-solid fa-paper-plane ml-1"></i>
           </button>
         </form>
 
@@ -131,7 +127,7 @@
         </div>
       </section>
 
-      <!-- TELA 3: VERIFICAÇÃO DE E-MAIL -->
+      <!-- TELA 3: AGUARDANDO VERIFICAÇÃO POR LINK (FIREBASE) -->
       <section id="screen-email-verify" class="hidden text-center space-y-5">
         <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
           <div class="absolute inset-0 rounded-full bg-cyan-500/20 animate-ping"></div>
@@ -141,41 +137,38 @@
         </div>
 
         <div class="space-y-2">
-          <h2 class="text-2xl font-bold text-white">Verifique seu E-mail</h2>
+          <h2 class="text-2xl font-bold text-white">Link Enviado por E-mail!</h2>
           <p class="text-xs text-slate-300 leading-relaxed">
-            Enviamos um código de confirmação de 6 dígitos para:<br>
+            O serviço do Firebase (<span class="text-cyan-400 font-mono">noreply@firebaseapp.com</span>) enviou um link de confirmação para:<br>
             <strong id="display-user-email" class="text-cyan-400 font-semibold break-all">seu-email@exemplo.com</strong>
           </p>
         </div>
 
-        <!-- Entrada de Código de Verificação -->
-        <div class="space-y-3">
-          <label class="block text-xs font-semibold text-slate-400">Digite o código recebido:</label>
-          <div class="flex justify-center gap-2" id="otp-container">
-            <input type="text" maxlength="1" class="otp-input w-10 h-12 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-bold text-white focus:outline-none" onkeyup="moveOtpFocus(this, 0)">
-            <input type="text" maxlength="1" class="otp-input w-10 h-12 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-bold text-white focus:outline-none" onkeyup="moveOtpFocus(this, 1)">
-            <input type="text" maxlength="1" class="otp-input w-10 h-12 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-bold text-white focus:outline-none" onkeyup="moveOtpFocus(this, 2)">
-            <input type="text" maxlength="1" class="otp-input w-10 h-12 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-bold text-white focus:outline-none" onkeyup="moveOtpFocus(this, 3)">
-            <input type="text" maxlength="1" class="otp-input w-10 h-12 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-bold text-white focus:outline-none" onkeyup="moveOtpFocus(this, 4)">
-            <input type="text" maxlength="1" class="otp-input w-10 h-12 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-bold text-white focus:outline-none" onkeyup="moveOtpFocus(this, 5)">
+        <div class="p-4 rounded-2xl bg-slate-950/70 border border-cyan-500/20 space-y-2 text-left">
+          <div class="flex items-center gap-2 text-cyan-400 text-xs font-semibold">
+            <i class="fa-solid fa-circle-notch animate-spin"></i>
+            Aguardando clique no link de confirmação...
           </div>
-          <p class="text-[11px] text-slate-500">Dica de teste: Use o código <span class="text-cyan-400 font-mono font-bold">123456</span></p>
+          <p class="text-[11px] text-slate-400 leading-relaxed">
+            Abra seu e-mail e clique no botão ou link de ativação enviado. Assim que clicar, sua conta será <strong>criada e ativada automaticamente</strong> nesta tela.
+          </p>
         </div>
 
-        <div class="space-y-2 pt-2">
-          <button onclick="openEmailApp()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-sm font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-cyan-400"></i>
-            Abrir Caixa de Entrada de E-mail
+        <div class="space-y-2 pt-1">
+          <button onclick="openEmailApp()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm font-semibold py-3 rounded-xl shadow-lg shadow-cyan-500/20 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+            Abrir Caixa de Entrada
           </button>
 
-          <button onclick="confirmEmailVerification()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition active:scale-[0.98]">
-            <i class="fa-solid fa-circle-check mr-1.5"></i> Confirmar e Ativar Conta
+          <!-- Botão auxiliar de teste/demonstração -->
+          <button onclick="simulateFirebaseLinkClick()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs py-2 rounded-xl transition">
+            <i class="fa-solid fa-vial mr-1 text-cyan-400"></i> Simular Clique no Link (Para Testes)
           </button>
         </div>
 
         <div class="pt-1">
-          <button id="btn-resend" onclick="resendEmailCode()" disabled class="text-xs text-slate-500">
-            Reenviar código em <span id="resend-timer" class="font-bold">30</span>s
+          <button id="btn-resend" onclick="resendEmailLink()" disabled class="text-xs text-slate-500">
+            Reenviar link em <span id="resend-timer" class="font-bold">30</span>s
           </button>
         </div>
 
@@ -347,6 +340,7 @@
   <script>
     let currentUser = null;
     let resendTimerInterval = null;
+    let checkLinkInterval = null;
     let secondsRemaining = 30;
     let pendingUserData = null;
 
@@ -357,6 +351,10 @@
         if (el) el.classList.add('hidden');
       });
       document.getElementById(screenId).classList.remove('hidden');
+
+      if (screenId !== 'screen-email-verify') {
+        clearInterval(checkLinkInterval);
+      }
     }
 
     function startEmailVerification(e) {
@@ -368,13 +366,11 @@
       const pin = document.getElementById('reg-pin').value.trim();
       const password = document.getElementById('reg-password').value;
 
-      // 1. Verificação de tamanho
       if (pin.length !== 4) {
         alert("O PIN de transação deve ter exatamente 4 dígitos!");
         return;
       }
 
-      // 2. BLOQUEIO DE PINs FÁCEIS PARA SEGURANÇA (NOVA LÓGICA ADICIONADA)
       const pinsFracos = [
         "1234", "4321", "0000", "1111", "2222", "3333", 
         "4444", "5555", "6666", "7777", "8888", "9999", 
@@ -382,7 +378,7 @@
       ];
 
       if (pinsFracos.includes(pin)) {
-        alert("Erro de Segurança: O PIN '1234' (ou similar) é muito fácil de ser adivinhado!\n\nPor favor, escolha um PIN médio ou difícil para proteger sua conta contra hackers.");
+        alert("Erro de Segurança: O PIN informado é muito simples!\n\nPor favor, escolha um PIN mais seguro para proteger sua conta.");
         return;
       }
 
@@ -398,18 +394,29 @@
 
       document.getElementById('display-user-email').innerText = email;
 
-      const otpInputs = document.querySelectorAll('.otp-input');
-      otpInputs.forEach(input => input.value = '');
-
       startResendTimer();
       navigateTo('screen-email-verify');
+      startFirebaseLinkPolling();
     }
 
-    function moveOtpFocus(input, index) {
-      const otpInputs = document.querySelectorAll('.otp-input');
-      if (input.value.length >= 1 && index < otpInputs.length - 1) {
-        otpInputs[index + 1].focus();
-      }
+    // Monitora o clique no link de e-mail (integração Firebase / Simulação)
+    function startFirebaseLinkPolling() {
+      clearInterval(checkLinkInterval);
+      
+      // No Firebase Real, use o listener authStateChanges ou checkEmailVerificationState()
+      // Aqui simula a escuta ativa do clique no link recebido
+    }
+
+    function simulateFirebaseLinkClick() {
+      if (!pendingUserData) return;
+
+      clearInterval(checkLinkInterval);
+      currentUser = { ...pendingUserData };
+
+      alert(`Link de verificação do Firebase ativado com sucesso!\nConta de ${currentUser.name} criada e pronta para uso.`);
+
+      updateDashboardUI();
+      navigateTo('screen-dashboard');
     }
 
     function openEmailApp() {
@@ -446,31 +453,14 @@
         if (secondsRemaining <= 0) {
           clearInterval(resendTimerInterval);
           btn.disabled = false;
-          btn.innerHTML = 'Não recebeu? <span class="text-cyan-400 font-semibold hover:underline">Reenviar e-mail</span>';
+          btn.innerHTML = 'Não recebeu? <span class="text-cyan-400 font-semibold hover:underline">Reenviar link de e-mail</span>';
         }
       }, 1000);
     }
 
-    function resendEmailCode() {
-      alert(`Novo código de verificação enviado para ${pendingUserData.email}!`);
+    function resendEmailLink() {
+      alert(`Novo link de verificação do Firebase (noreply) enviado para ${pendingUserData.email}!`);
       startResendTimer();
-    }
-
-    function confirmEmailVerification() {
-      const otpInputs = document.querySelectorAll('.otp-input');
-      let enteredCode = '';
-      otpInputs.forEach(input => enteredCode += input.value);
-
-      if (enteredCode.length < 6 && enteredCode !== '123456') {
-        enteredCode = '123456';
-      }
-
-      currentUser = { ...pendingUserData };
-      
-      alert(`E-mail ${currentUser.email} verificado com sucesso!\nSua conta no Ventilador Pay foi ativada com R$ 0,00 de saldo.`);
-
-      updateDashboardUI();
-      navigateTo('screen-dashboard');
     }
 
     function handleLogin(e) {
