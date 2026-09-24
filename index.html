@@ -174,12 +174,6 @@
             Abrir Caixa de Entrada
           </button>
         </div>
-
-        <div class="pt-1">
-          <button id="btn-resend" onclick="resendEmailLink()" disabled class="text-xs text-slate-500">
-            Reenviar e-mail em <span id="resend-timer" class="font-bold">30</span>s
-          </button>
-        </div>
       </section>
 
       <!-- TELA 4: DASHBOARD -->
@@ -220,33 +214,40 @@
         </div>
 
         <!-- BOTÕES DE AÇÃO -->
-        <div class="grid grid-cols-4 gap-2">
-          <button onclick="openModal('modal-pay-email')" class="p-2.5 bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-2xl flex flex-col items-center gap-1.5 transition">
-            <div class="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-sm">
+        <div class="grid grid-cols-5 gap-1.5">
+          <button onclick="openModal('modal-pay-email')" class="p-2 bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-2xl flex flex-col items-center gap-1 transition">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs">
               <i class="fa-solid fa-at"></i>
             </div>
-            <span class="text-[11px] font-semibold text-slate-200">Pagar E-mail</span>
+            <span class="text-[10px] font-semibold text-slate-200">Pagar</span>
           </button>
 
-          <button onclick="openModal('modal-pay-qr')" class="p-2.5 bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-2xl flex flex-col items-center gap-1.5 transition">
-            <div class="w-9 h-9 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-sm">
+          <button onclick="openModal('modal-pay-qr')" class="p-2 bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-2xl flex flex-col items-center gap-1 transition">
+            <div class="w-8 h-8 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xs">
               <i class="fa-solid fa-camera"></i>
             </div>
-            <span class="text-[11px] font-semibold text-slate-200">Pagar QR</span>
+            <span class="text-[10px] font-semibold text-slate-200">Ler QR</span>
           </button>
 
-          <button onclick="openModal('modal-qrcode')" class="p-2.5 bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-2xl flex flex-col items-center gap-1.5 transition">
-            <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-sm">
+          <button onclick="openModal('modal-qrcode')" class="p-2 bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-2xl flex flex-col items-center gap-1 transition">
+            <div class="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs">
               <i class="fa-solid fa-qrcode"></i>
             </div>
-            <span class="text-[11px] font-semibold text-slate-200">Criar QR</span>
+            <span class="text-[10px] font-semibold text-slate-200">Gerar</span>
           </button>
 
-          <button onclick="handleCardClick()" class="p-2.5 bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-2xl flex flex-col items-center gap-1.5 transition">
-            <div class="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-sm">
+          <button onclick="handleCardClick()" class="p-2 bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-2xl flex flex-col items-center gap-1 transition">
+            <div class="w-8 h-8 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xs">
               <i class="fa-solid fa-credit-card"></i>
             </div>
-            <span class="text-[11px] font-semibold text-slate-200">Cartão</span>
+            <span class="text-[10px] font-semibold text-slate-200">Cartão</span>
+          </button>
+
+          <button onclick="openCaixinhaModal()" class="p-2 bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-2xl flex flex-col items-center gap-1 transition">
+            <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xs">
+              <i class="fa-solid fa-box-archive"></i>
+            </div>
+            <span class="text-[10px] font-semibold text-slate-200">Caixinha</span>
           </button>
         </div>
 
@@ -257,7 +258,7 @@
             <span class="text-[11px] text-slate-500" id="tx-count">0 registros</span>
           </div>
 
-          <div id="tx-list" class="space-y-2 max-h-36 overflow-y-auto pr-1">
+          <div id="tx-list" class="space-y-2 max-h-32 overflow-y-auto pr-1">
             <div class="p-3 rounded-xl bg-slate-950/50 border border-slate-800/50 text-center">
               <p class="text-xs text-slate-500">Nenhuma movimentação realizada ainda.</p>
             </div>
@@ -273,7 +274,50 @@
 
   </div>
 
-  <!-- MODAL: ADICIONAR CPF -->
+  <!-- MODAL: CAIXINHA DO VENTILADOR -->
+  <div id="modal-caixinha" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl text-left">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-white text-base flex items-center gap-2">
+          <i class="fa-solid fa-box-archive text-amber-400"></i> Caixinha do Ventilador
+        </h3>
+        <button onclick="closeModal('modal-caixinha')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="bg-slate-950/80 border border-amber-500/20 p-4 rounded-2xl space-y-2">
+        <div class="flex justify-between items-center">
+          <span class="text-xs text-slate-400">Guardado na Caixinha:</span>
+          <span class="text-xs text-amber-400 font-semibold">Rendimento Ativo</span>
+        </div>
+        <div class="flex items-baseline gap-1">
+          <span class="text-sm font-bold text-slate-400">R$</span>
+          <span id="caixinha-saldo" class="text-2xl font-extrabold text-white">0,00</span>
+        </div>
+        <div class="text-[11px] text-slate-400 flex justify-between pt-1 border-t border-slate-800">
+          <span>Tempo investido: <strong id="caixinha-dias" class="text-amber-400">0 dias</strong></span>
+          <span>Rendimento: <strong id="caixinha-rendimento" class="text-emerald-400">R$ 0,00</strong></span>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Valor para Guardar ou Resgatar (R$)</label>
+          <input type="number" id="caixinha-valor" step="0.01" min="0.01" placeholder="10.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-amber-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="guardarNaCaixinha()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl transition text-xs">
+            Guardar Dinheiro
+          </button>
+          <button onclick="resgatarDaCaixinha()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl transition text-xs border border-slate-700">
+            Resgatar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTROS MODAIS -->
   <div id="modal-add-cpf" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl text-left">
       <div class="flex justify-between items-center">
@@ -282,31 +326,22 @@
         </h3>
         <button onclick="closeModal('modal-add-cpf')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <p class="text-xs text-slate-400">Adicione seu CPF para liberar o acesso à verificação facial do seu Cartão Virtual.</p>
-
       <form onsubmit="handleSaveCpf(event)" class="space-y-3">
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Número do CPF</label>
           <input type="text" id="input-new-cpf" required placeholder="000.000.000-00" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-cyan-500">
         </div>
-        <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-xl transition text-xs">
-          Salvar CPF
-        </button>
+        <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-xl transition text-xs">Salvar CPF</button>
       </form>
     </div>
   </div>
 
-  <!-- MODAL: VERIFICAÇÃO FACIAL PARA O CARTÃO -->
   <div id="modal-face-scan" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center p-4 z-50">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl text-center">
       <div class="flex justify-between items-center">
-        <h3 class="font-bold text-white text-base flex items-center gap-2">
-          <i class="fa-solid fa-face-smile text-cyan-400"></i> Verificação Facial
-        </h3>
+        <h3 class="font-bold text-white text-base flex items-center gap-2"><i class="fa-solid fa-face-smile text-cyan-400"></i> Verificação Facial</h3>
         <button onclick="closeModal('modal-face-scan')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <p class="text-xs text-slate-400">Posicione seu rosto na câmera para validarmos se você tem mais de 13 anos e gerar seu cartão.</p>
-
       <div class="relative w-full h-64 bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center">
         <video id="face-video" autoplay muted playsinline class="w-full h-full object-cover"></video>
         <div id="face-loading" class="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center gap-2 text-xs text-cyan-400">
@@ -314,98 +349,40 @@
           Carregando modelos de IA...
         </div>
       </div>
-
-      <button id="btn-capture-face" onclick="verifyFaceAndCreateCard()" disabled class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 text-white font-semibold py-3 rounded-xl transition text-xs opacity-50 cursor-not-allowed">
-        Tirar Foto e Validar Idade
-      </button>
+      <button id="btn-capture-face" onclick="verifyFaceAndCreateCard()" disabled class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold py-3 rounded-xl transition text-xs opacity-50 cursor-not-allowed">Tirar Foto e Validar Idade</button>
     </div>
   </div>
 
-  <!-- MODAL: CARTÃO VIRTUAL GERADO -->
   <div id="modal-card" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl text-center">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-white text-base">Seu Cartão Virtual</h3>
-        <button onclick="closeModal('modal-card')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-
+      <div class="flex justify-between items-center"><h3 class="font-bold text-white text-base">Seu Cartão Virtual</h3><button onclick="closeModal('modal-card')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button></div>
       <div id="card-locked-view" class="hidden p-6 rounded-2xl bg-slate-950/70 border border-amber-500/30 space-y-3">
-        <div class="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 text-xl flex items-center justify-center mx-auto">
-          <i class="fa-solid fa-lock"></i>
-        </div>
+        <div class="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 text-xl flex items-center justify-center mx-auto"><i class="fa-solid fa-lock"></i></div>
         <p class="text-xs text-slate-300 leading-relaxed" id="card-lock-msg">O Cartão Virtual exige CPF e verificação facial de maioridade (13+).</p>
-        <button id="btn-unlock-action" onclick="closeModal('modal-card'); openModal('modal-add-cpf');" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition">
-          Adicionar CPF Agora
-        </button>
+        <button id="btn-unlock-action" onclick="closeModal('modal-card'); openModal('modal-add-cpf');" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition">Adicionar CPF Agora</button>
       </div>
-
       <div id="card-active-view" class="hidden space-y-4">
         <div class="bg-gradient-to-tr from-cyan-600 via-blue-700 to-indigo-900 p-5 rounded-2xl shadow-xl text-white space-y-6 relative overflow-hidden text-left">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-sm tracking-wider uppercase">Ventilador Pay</span>
-            <i class="fa-solid fa-wifi rotate-90 text-sm opacity-80"></i>
-          </div>
-
-          <div>
-            <span class="text-[10px] text-cyan-200 block uppercase">Número do Cartão</span>
-            <p id="virtual-card-number" class="font-mono text-base tracking-widest font-bold">5482 0000 0000 0000</p>
-          </div>
-
+          <div class="flex justify-between items-center"><span class="font-bold text-sm tracking-wider uppercase">Ventilador Pay</span><i class="fa-solid fa-wifi rotate-90 text-sm opacity-80"></i></div>
+          <div><span class="text-[10px] text-cyan-200 block uppercase">Número do Cartão</span><p id="virtual-card-number" class="font-mono text-base tracking-widest font-bold">5482 0000 0000 0000</p></div>
           <div class="flex justify-between items-center text-xs">
-            <div>
-              <span class="text-[9px] text-cyan-200 block uppercase">Validade</span>
-              <p id="virtual-card-exp" class="font-mono font-semibold">10/30</p>
-            </div>
-            <div>
-              <span class="text-[9px] text-cyan-200 block uppercase">CVV</span>
-              <p id="virtual-card-cvv" class="font-mono font-semibold">***</p>
-            </div>
+            <div><span class="text-[9px] text-cyan-200 block uppercase">Validade</span><p id="virtual-card-exp" class="font-mono font-semibold">10/30</p></div>
+            <div><span class="text-[9px] text-cyan-200 block uppercase">CVV</span><p id="virtual-card-cvv" class="font-mono font-semibold">***</p></div>
           </div>
         </div>
-
-        <button onclick="closeModal('modal-card'); openModal('modal-pay-qr');" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-xl transition text-xs flex items-center justify-center gap-2">
-          <i class="fa-solid fa-qrcode"></i> Pagar com QR Code do Cartão
-        </button>
       </div>
     </div>
   </div>
 
-  <!-- OUTROS MODAIS (Pagar E-mail, Criar QR, Ler QR, Comprovante) mantidos igual -->
   <div id="modal-pay-email" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center">
-        <h3 class="font-bold text-white text-base">Pagar para E-mail</h3>
-        <button onclick="closeModal('modal-pay-email')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-      </div>
+      <div class="flex justify-between items-center"><h3 class="font-bold text-white text-base">Pagar para E-mail</h3><button onclick="closeModal('modal-pay-email')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button></div>
       <form onsubmit="handlePayByEmail(event)" class="space-y-3 text-left">
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">E-mail do Destinatário</label>
-          <input type="email" id="pay-email-dest" required placeholder="amigo@exemplo.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-cyan-500">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Valor (R$)</label>
-          <input type="number" id="pay-email-valor" step="0.01" min="0.01" required placeholder="25.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-cyan-500">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">PIN (4 dígitos)</label>
-          <input type="password" id="pay-email-pin" maxlength="4" required placeholder="••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-center text-white focus:outline-none focus:border-cyan-500 font-mono tracking-widest">
-        </div>
+        <div><label class="block text-xs font-semibold text-slate-300 mb-1">E-mail do Destinatário</label><input type="email" id="pay-email-dest" required placeholder="amigo@exemplo.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-cyan-500"></div>
+        <div><label class="block text-xs font-semibold text-slate-300 mb-1">Valor (R$)</label><input type="number" id="pay-email-valor" step="0.01" min="0.01" required placeholder="25.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-cyan-500"></div>
+        <div><label class="block text-xs font-semibold text-slate-300 mb-1">PIN (4 dígitos)</label><input type="password" id="pay-email-pin" maxlength="4" required placeholder="••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-center text-white focus:outline-none focus:border-cyan-500 font-mono tracking-widest"></div>
         <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl transition text-xs mt-2">Confirmar Envio</button>
       </form>
-    </div>
-  </div>
-
-  <div id="modal-comprovante" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-    <div class="bg-slate-900 border border-emerald-500/40 w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl text-center">
-      <div class="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-400 text-xl flex items-center justify-center mx-auto">
-        <i class="fa-solid fa-check"></i>
-      </div>
-      <h3 class="font-bold text-white text-base">Comprovante de Transferência</h3>
-      <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 text-left space-y-2 text-xs">
-        <div class="flex justify-between"><span class="text-slate-400">Valor:</span><span id="comp-valor" class="font-bold text-white">R$ 0,00</span></div>
-        <div class="flex justify-between"><span class="text-slate-400">Destinatário:</span><span id="comp-dest" class="text-cyan-400">---</span></div>
-      </div>
-      <button onclick="closeModal('modal-comprovante')" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-xs">Fechar</button>
     </div>
   </div>
 
@@ -443,7 +420,6 @@
     const db = firebase.firestore();
 
     let currentUserData = null;
-    let html5QrCodeScanner = null;
     let faceStream = null;
 
     auth.onAuthStateChanged(async (user) => {
@@ -491,6 +467,7 @@
           uid: userCredential.user.uid,
           name, email, cpf, pin,
           saldo: 0.00,
+          caixinha: { saldo: 0.00, dataInicio: null },
           cartaoVirtual: null,
           criadoEm: firebase.firestore.FieldValue.serverTimestamp()
         });
@@ -543,7 +520,78 @@
       alert("CPF salvo com sucesso!");
     }
 
-    // CLIQUE NO BOTÃO DE CARTÃO VIRTUAL
+    // --- FUNÇÕES DA CAIXINHA ---
+    function openCaixinhaModal() {
+      const caixinha = currentUserData.caixinha || { saldo: 0, dataInicio: null };
+      document.getElementById('caixinha-saldo').innerText = (caixinha.saldo || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+      
+      let dias = 0;
+      let rendimento = 0;
+      if (caixinha.dataInicio && caixinha.saldo > 0) {
+        const diffTime = Math.abs(new Date() - caixinha.dataInicio.toDate());
+        dias = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        // Simulação de rendimento: 0.1% ao dia sobre o saldo
+        rendimento = caixinha.saldo * (0.001 * dias);
+      }
+
+      document.getElementById('caixinha-dias').innerText = `${dias} dias`;
+      document.getElementById('caixinha-rendimento').innerText = `R$ ${rendimento.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      openModal('modal-caixinha');
+    }
+
+    async function guardarNaCaixinha() {
+      const valor = parseFloat(document.getElementById('caixinha-valor').value);
+      if (!valor || valor <= 0) { alert("Digite um valor válido!"); return; }
+      if (currentUserData.saldo < valor) { alert("Saldo insuficiente na conta principal!"); return; }
+
+      const novoSaldoConta = currentUserData.saldo - valor;
+      const caixinhaAtual = currentUserData.caixinha || { saldo: 0, dataInicio: null };
+      const novoSaldoCaixinha = (caixinhaAtual.saldo || 0) + valor;
+      const dataInicio = caixinhaAtual.dataInicio || firebase.firestore.Timestamp.now();
+
+      await db.collection('contas').doc(auth.currentUser.uid).update({
+        saldo: novoSaldoConta,
+        caixinha: { saldo: novoSaldoCaixinha, dataInicio: dataInicio }
+      });
+
+      await db.collection('contas').doc(auth.currentUser.uid).collection('transacoes').add({
+        descricao: 'Guardado na Caixinha',
+        valor: valor,
+        tipo: 'saida',
+        data: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert("Dinheiro guardado na caixinha com sucesso! Agora ele começou a render.");
+      openCaixinhaModal();
+    }
+
+    async function resgatarDaCaixinha() {
+      const valor = parseFloat(document.getElementById('caixinha-valor').value);
+      const caixinhaAtual = currentUserData.caixinha || { saldo: 0, dataInicio: null };
+      if (!valor || valor <= 0) { alert("Digite um valor válido para resgatar!"); return; }
+      if (caixinhaAtual.saldo < valor) { alert("Você não tem tudo isso na caixinha!"); return; }
+
+      const novoSaldoCaixinha = caixinhaAtual.saldo - valor;
+      const novoSaldoConta = currentUserData.saldo + valor;
+      const novaDataInicio = novoSaldoCaixinha <= 0 ? null : caixinhaAtual.dataInicio;
+
+      await db.collection('contas').doc(auth.currentUser.uid).update({
+        saldo: novoSaldoConta,
+        caixinha: { saldo: novoSaldoCaixinha, dataInicio: novaDataInicio }
+      });
+
+      await db.collection('contas').doc(auth.currentUser.uid).collection('transacoes').add({
+        descricao: 'Resgate da Caixinha',
+        valor: valor,
+        tipo: 'entrada',
+        data: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      alert("Resgate realizado com sucesso! O dinheiro voltou para a conta principal.");
+      openCaixinhaModal();
+    }
+
+    // --- CARTÃO VIRTUAL COM IA ---
     async function handleCardClick() {
       if (!currentUserData || !currentUserData.cpf || currentUserData.cpf.trim() === "") {
         document.getElementById('card-locked-view').classList.remove('hidden');
@@ -554,11 +602,9 @@
         return;
       }
 
-      // Se já tiver cartão gerado no Firestore, exibe ele
       if (currentUserData.cartaoVirtual) {
         mostrarCartaoAtivo(currentUserData.cartaoVirtual);
       } else {
-        // Primeira vez: Abre verificação facial para checar idade
         openModal('modal-face-scan');
         await initFaceDetector();
       }
@@ -584,11 +630,10 @@
           btnCapture.classList.remove('opacity-50', 'cursor-not-allowed');
         };
       } catch (err) {
-        loading.innerText = "Erro ao acessar câmera ou carregar IA: " + err.message;
+        loading.innerText = "Erro ao acessar câmera: " + err.message;
       }
     }
 
-    // VERIFICAR ROSTO E GERAR CARTÃO ÚNICO ALEATÓRIO
     async function verifyFaceAndCreateCard() {
       const video = document.getElementById('face-video');
       const btnCapture = document.getElementById('btn-capture-face');
@@ -599,63 +644,40 @@
         const detection = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender();
 
         if (!detection) {
-          alert("Nenhum rosto detectado com clareza. Olhe para a câmera e tente novamente.");
+          alert("Nenhum rosto detectado com clareza. Tente novamente.");
           btnCapture.innerText = "Tirar Foto e Validar Idade";
           btnCapture.disabled = false;
           return;
         }
 
         const idadeEstimada = Math.round(detection.age);
-        
-        // Parar a câmera
-        if (faceStream) {
-          faceStream.getTracks().forEach(track => track.stop());
-        }
+        if (faceStream) faceStream.getTracks().forEach(track => track.stop());
         closeModal('modal-face-scan');
 
-        // VALIDAÇÃO DE IDADE (< 13 anos bloqueia)
         if (idadeEstimada < 13) {
           document.getElementById('card-locked-view').classList.remove('hidden');
           document.getElementById('card-active-view').classList.add('hidden');
-          document.getElementById('card-lock-msg').innerText = `Acesso negado: A IA estimou sua idade em ${idadeEstimada} anos. Menores de 13 anos não podem gerar cartão virtual.`;
+          document.getElementById('card-lock-msg').innerText = `Acesso negado: Idade estimada em ${idadeEstimada} anos. Menores de 13 anos não podem gerar cartão.`;
           document.getElementById('btn-unlock-action').classList.add('hidden');
           openModal('modal-card');
           return;
         }
 
-        // GERAR DADOS ÚNICOS E ALEATÓRIOS QUE NINGUÉM ESTEJA USANDO
         let cartaoUnico = null;
         let attempts = 0;
         while (!cartaoUnico && attempts < 5) {
           attempts++;
-          const randomNum = Math.floor(1000 + Math.random() * 9000);
-          const randomNum2 = Math.floor(1000 + Math.random() * 9000);
-          const randomNum3 = Math.floor(1000 + Math.random() * 9000);
-          const numeroCartao = `5482 ${randomNum} ${randomNum2} ${randomNum3}`;
-
-          // Checar se já existe no Firestore para garantir unicidade
+          const numeroCartao = `5482 ${Math.floor(1000 + Math.random() * 9000)} ${Math.floor(1000 + Math.random() * 9000)} ${Math.floor(1000 + Math.random() * 9000)}`;
           const checkQuery = await db.collection('contas').where('cartaoVirtual.numero', '==', numeroCartao).get();
           if (checkQuery.empty) {
-            // Gerar validade de até 5 anos no futuro
-            const anoAtual = new Date().getFullYear();
-            const anoValidade = anoAtual + Math.floor(Math.random() * 5) + 1; // 1 a 5 anos
+            const anoValidade = new Date().getFullYear() + Math.floor(Math.random() * 5) + 1;
             const mesValidade = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
-            const cvv = String(Math.floor(100 + Math.random() * 900));
-
-            cartaoUnico = {
-              numero: numeroCartao,
-              validade: `${mesValidade}/${String(anoValidade).slice(-2)}`,
-              cvv: cvv
-            };
+            cartaoUnico = { numero: numeroCartao, validade: `${mesValidade}/${String(anoValidade).slice(-2)}`, cvv: String(Math.floor(100 + Math.random() * 900)) };
           }
         }
 
-        // Salvar no Firestore
-        await db.collection('contas').doc(auth.currentUser.uid).update({
-          cartaoVirtual: cartaoUnico
-        });
-
-        alert(`Rosto validado! Idade estimada: ${idadeEstimada} anos. Cartão gerado com sucesso!`);
+        await db.collection('contas').doc(auth.currentUser.uid).update({ cartaoVirtual: cartaoUnico });
+        alert(`Rosto validado! Idade estimada: ${idadeEstimada} anos. Cartão gerado!`);
         mostrarCartaoAtivo(cartaoUnico);
 
       } catch (err) {
