@@ -11,7 +11,7 @@
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Firebase SDKs (Compat v10) para disparo real de e-mails -->
+  <!-- Firebase SDKs (Compat v10) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
@@ -337,16 +337,18 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT & CONFIGURAÇÃO FIREBASE -->
+  <!-- JAVASCRIPT & CONFIGURAÇÃO FIREBASE INTEGRADA -->
   <script>
-    // ⚠️ SUBSTITUA COM AS CHAVES DO SEU CONSOLE DO FIREBASE PARA ENVIAR E-MAILS REAIS
+    // Suas credenciais do Firebase para o projeto Ventilador Pay
     const firebaseConfig = {
-      apiKey: "SUA_API_KEY_AQUI",
-      authDomain: "SEU_PROJETO.firebaseapp.com",
-      projectId: "SEU_PROJETO_ID",
-      storageBucket: "SEU_PROJETO.appspot.com",
-      messagingSenderId: "SEU_SENDER_ID",
-      appId: "SEU_APP_ID"
+      apiKey: "AIzaSyArC872DnSB3EBLNpl-Lxajo9rEbS2UlCc",
+      authDomain: "ventilador-pay.firebaseapp.com",
+      databaseURL: "https://ventilador-pay-default-rtdb.firebaseio.com",
+      projectId: "ventilador-pay",
+      storageBucket: "ventilador-pay.firebasestorage.app",
+      messagingSenderId: "466899508532",
+      appId: "1:466899508532:web:54c147a36cc115039e5961",
+      measurementId: "G-DBLHR13NDB"
     };
 
     // Inicializa o Firebase
@@ -447,8 +449,6 @@
         console.error("Erro Firebase:", error);
         if (error.code === 'auth/email-already-in-use') {
           alert("Este e-mail já está cadastrado! Tente fazer login.");
-        } else if (error.code === 'auth/invalid-api-key') {
-          alert("Aviso: Lembre-se de colar as chaves do seu projeto Firebase Console no objeto 'firebaseConfig' dentro do código para disparar e-mails de verdade!");
         } else {
           alert("Erro no cadastro: " + error.message);
         }
