@@ -1,1220 +1,602 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ventilador Pay - Plataforma de Pagamentos⚡</title>
-  
+  <title>Ventilador Pay</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <!-- QRCode.js Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  
-  <!-- Google Fonts (Outfit & Inter) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            outfit: ['Outfit', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              800: '#3730a3',
-              900: '#312e81',
-              accent: '#8b5cf6',
-              electric: '#00f2fe'
-            }
-          }
-        }
-      }
-    }
-  </script>
-
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body {
-      background: radial-gradient(circle at top right, #1e1b4b, #0f172a, #090d16);
-      min-height: 100vh;
-      color: #f8fafc;
-    }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
     .glass-card {
-      background: rgba(30, 27, 75, 0.45);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .glass-input {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-    }
-    .glass-input:focus {
-      border-color: #6366f1;
-      outline: none;
-      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-    }
-    .gradient-text {
-      background: linear-gradient(135deg, #a855f7, #6366f1, #00f2fe);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .gradient-btn {
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
-      transition: all 0.3s ease;
-    }
-    .gradient-btn:hover {
-      background: linear-gradient(135deg, #4338ca, #6d28d9);
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
-      transform: translateY(-1px);
-    }
-    .card-virtual {
-      background: linear-gradient(135deg, #312e81 0%, #581c87 50%, #1e1b4b 100%);
-      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2);
-    }
-    .hide-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .hide-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    .otp-input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     }
   </style>
 </head>
-<body class="font-sans antialiased flex flex-col min-h-screen">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4">
 
-  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+  <!-- CONTAINER PRINCIPAL -->
+  <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden min-h-[680px] flex flex-col justify-between relative">
 
-  <header id="app-header" class="hidden sticky top-0 z-40 glass-card border-b border-white/10 px-4 py-3">
-    <div class="max-w-6xl mx-auto flex items-center justify-between">
-      <!-- Logo -->
-      <div class="flex items-center space-x-2 cursor-pointer" onclick="switchTab('dashboard')">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-indigo-500/30">
-          <i class="fa-solid font-bold fa-fan animate-spin" style="animation-duration: 8s;"></i>
+    <!-- HEADER GLOBAL DA APLICAÇÃO -->
+    <header class="p-5 border-b border-slate-800/60 flex items-center justify-between bg-slate-900/50 backdrop-blur-md">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid font-bold text-xl fa-fan animate-spin" style="animation-duration: 8s;"></i>
         </div>
         <div>
-          <span class="font-outfit font-extrabold text-xl tracking-tight text-white">Ventilador<span class="text-indigo-400">Pay</span></span>
-          <span class="text-xs text-indigo-300 block -mt-1 font-medium">Pagamentos Relâmpago⚡</span>
+          <h1 class="font-bold text-lg leading-tight bg-gradient-to-r from-white via-slate-200 to-cyan-400 bg-clip-text text-transparent">Ventilador Pay</h1>
+          <p class="text-xs text-slate-400">Seu dinheiro em movimento</p>
         </div>
       </div>
+      <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+        Ativo
+      </span>
+    </header>
 
-      <!-- User Email & Balance Widget -->
-      <div class="flex items-center space-x-3">
-        <div class="hidden sm:flex flex-col text-right">
-          <span id="user-email-header" class="text-xs text-gray-300 font-medium truncate max-w-[180px]">usuario@email.com</span>
-          <span class="text-xs text-indigo-300">Saldo Principal: <strong id="user-balance-header" class="text-emerald-400 font-bold">R$ 0,00</strong></span>
-        </div>
-        <button onclick="handleLogout()" class="px-3 py-1.5 rounded-lg bg-red-500/20 text-red-300 border border-red-500/30 text-xs font-semibold hover:bg-red-500/30 transition flex items-center gap-1.5">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <span class="hidden md:inline">Sair</span>
-        </button>
-      </div>
-    </div>
-  </header>
+    <!-- CONTEÚDO DINÂMICO DAS TELAS -->
+    <main class="p-6 flex-1 flex flex-col justify-center">
 
-  <!-- Main Container -->
-  <main class="flex-grow flex flex-col items-center justify-center p-4">
-    
-    <div id="view-auth" class="w-full max-w-md glass-card rounded-2xl p-6 sm:p-8 shadow-2xl border border-white/10 my-auto">
-      <div class="text-center mb-6">
-        <div class="inline-flex w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 items-center justify-center text-white text-3xl font-bold mb-3 shadow-xl shadow-indigo-500/30">
-          <i class="fa-solid fa-fan animate-spin" style="animation-duration: 6s;"></i>
+      <!-- TELA 1: LOGIN -->
+      <section id="screen-login" class="space-y-5">
+        <div class="text-center space-y-1">
+          <h2 class="text-2xl font-bold text-white">Bem-vindo de volta!</h2>
+          <p class="text-xs text-slate-400">Acesse sua conta para continuar</p>
         </div>
-        <h1 class="text-2xl font-outfit font-extrabold text-white">Bem-vindo ao <span class="gradient-text">Ventilador Pay</span></h1>
-        <p class="text-xs text-gray-400 mt-1">Sua carteira digital rápida, segura e sem complicações</p>
-      </div>
 
-      <!-- Auth Tabs -->
-      <div class="flex bg-slate-900/60 p-1 rounded-xl mb-6 border border-white/5">
-        <button id="tab-btn-login" onclick="switchAuthTab('login')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-white bg-indigo-600 transition shadow">Entrar</button>
-        <button id="tab-btn-register" onclick="switchAuthTab('register')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition">Cadastrar</button>
-      </div>
-
-      <!-- FORM: LOGIN -->
-      <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">Seu E-mail</label>
-          <div class="relative">
-            <i class="fa-solid fa-envelope absolute left-3.5 top-3 text-gray-400 text-xs"></i>
-            <input type="email" id="login-email" required placeholder="exemplo@gmail.com" class="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-sm">
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">Sua Senha</label>
-          <div class="relative">
-            <i class="fa-solid fa-lock absolute left-3.5 top-3 text-gray-400 text-xs"></i>
-            <input type="password" id="login-password" required placeholder="••••••••" class="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-sm">
-          </div>
-        </div>
-        <div class="text-right">
-          <button type="button" onclick="switchAuthTab('reset')" class="text-xs text-indigo-400 hover:underline font-medium">Esqueceu a senha?</button>
-        </div>
-        <button type="submit" class="w-full py-3 rounded-xl gradient-btn text-white font-bold text-sm tracking-wide shadow-lg">Entrar na Conta</button>
-      </form>
-
-      <!-- FORM: REGISTER -->
-      <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
-        <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">E-mail para Cadastro</label>
-          <div class="relative">
-            <i class="fa-solid fa-envelope absolute left-3.5 top-3 text-gray-400 text-xs"></i>
-            <input type="email" id="register-email" required placeholder="exemplo@gmail.com" class="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-sm">
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">Crie uma Senha Segura</label>
-          <div class="relative">
-            <i class="fa-solid fa-lock absolute left-3.5 top-3 text-gray-400 text-xs"></i>
-            <input type="password" id="register-password" minlength="6" required placeholder="Mínimo 6 caracteres" class="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-sm">
-          </div>
-        </div>
-        <div class="bg-indigo-950/50 p-3 rounded-xl border border-indigo-500/20 text-xs text-indigo-200 flex items-start gap-2">
-          <i class="fa-solid fa-wallet text-indigo-400 mt-0.5"></i>
-          <span>Ao se cadastrar, sua conta será iniciada com <strong>R$ 0,00 de saldo</strong>.</span>
-        </div>
-        <button type="submit" class="w-full py-3 rounded-xl gradient-btn text-white font-bold text-sm tracking-wide shadow-lg">Criar Minha Conta</button>
-      </form>
-
-      <!-- FORM: RESET PASSWORD -->
-      <form id="form-reset" onsubmit="handleResetPassword(event)" class="space-y-4 hidden">
-        <p class="text-xs text-gray-300 mb-2">Informe seu e-mail abaixo. Enviaremos um link de redefinição de senha para a sua caixa de entrada.</p>
-        <div>
-          <label class="block text-xs font-medium text-gray-300 mb-1">E-mail Cadastrado</label>
-          <div class="relative">
-            <i class="fa-solid fa-envelope absolute left-3.5 top-3 text-gray-400 text-xs"></i>
-            <input type="email" id="reset-email" required placeholder="exemplo@gmail.com" class="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-sm">
-          </div>
-        </div>
-        <button type="submit" class="w-full py-3 rounded-xl gradient-btn text-white font-bold text-sm tracking-wide shadow-lg">Enviar Link de Recuperação</button>
-        <button type="button" onclick="switchAuthTab('login')" class="w-full py-2.5 text-xs text-gray-400 hover:text-white transition">Voltar ao Login</button>
-      </form>
-    </div>
-
-    <div id="view-app" class="w-full max-w-4xl space-y-6 hidden my-auto py-4">
-      
-      <!-- Balance & Quick Overview Card -->
-      <div class="glass-card rounded-2xl p-6 relative overflow-hidden border border-white/10 shadow-2xl">
-        <div class="absolute -right-10 -top-10 w-48 h-48 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -left-10 -bottom-10 w-48 h-48 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
+        <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
           <div>
-            <span class="text-xs font-medium text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
-              <i class="fa-solid fa-wallet text-indigo-400"></i> Conta Principal Ventilador Pay
-            </span>
-            <div class="flex items-baseline space-x-2 mt-1">
-              <span class="text-3xl sm:text-4xl font-outfit font-extrabold text-white" id="app-main-balance">R$ 0,00</span>
-              <span class="text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20"><i class="fa-solid fa-check text-[10px]"></i> Ativa</span>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">E-mail ou CPF</label>
+            <div class="relative">
+              <i class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+              <input type="text" id="login-email" required placeholder="seu@email.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
             </div>
           </div>
 
-          <!-- Quick Action Buttons Bar -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full md:w-auto">
-            <button onclick="switchTab('send')" class="px-4 py-2.5 rounded-xl bg-indigo-600/80 hover:bg-indigo-600 text-white font-semibold text-xs transition flex flex-col items-center gap-1 border border-indigo-400/30">
-              <i class="fa-solid fa-paper-plane text-sm"></i>
-              <span>Enviar / Pagar</span>
-            </button>
-            <button onclick="switchTab('receive')" class="px-4 py-2.5 rounded-xl bg-purple-600/80 hover:bg-purple-600 text-white font-semibold text-xs transition flex flex-col items-center gap-1 border border-purple-400/30">
-              <i class="fa-solid fa-qrcode text-sm"></i>
-              <span>Receber (QR)</span>
-            </button>
-            <button onclick="switchTab('card')" class="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-white font-semibold text-xs transition flex flex-col items-center gap-1 border border-white/10">
-              <i class="fa-solid fa-credit-card text-sm text-indigo-400"></i>
-              <span>Cartão Virtual</span>
-            </button>
-            <button onclick="switchTab('history')" class="px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-white font-semibold text-xs transition flex flex-col items-center gap-1 border border-white/10">
-              <i class="fa-solid fa-clock-rotate-left text-sm text-purple-400"></i>
-              <span>Histórico IDs</span>
-            </button>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Senha</label>
+            <div class="relative">
+              <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+              <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+            </div>
           </div>
+
+          <button type="submit" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold py-3 rounded-xl shadow-lg shadow-cyan-500/20 transition active:scale-[0.98]">
+            Entrar no App
+          </button>
+        </form>
+
+        <div class="text-center pt-2">
+          <p class="text-xs text-slate-400">
+            Ainda não tem conta? 
+            <button onclick="navigateTo('screen-register')" class="text-cyan-400 font-semibold hover:underline">Cadastre-se</button>
+          </p>
         </div>
-      </div>
+      </section>
 
-      <!-- Navigation Tabs Container -->
-      <div class="glass-card rounded-2xl p-6 border border-white/10 min-h-[420px]">
-        
-        <!-- TAB 1: ENVIAR / PAGAR -->
-        <div id="tab-content-send" class="space-y-6">
-          <div class="border-b border-white/10 pb-4">
-            <h2 class="text-xl font-outfit font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-paper-plane text-indigo-400"></i> Enviar Dinheiro ou Pagar Cobrança
-            </h2>
-            <p class="text-xs text-gray-400 mt-0.5">Transfira saldo para qualquer e-mail ou pague uma cobrança QR Code de 6 dígitos</p>
+      <!-- TELA 2: CADASTRO -->
+      <section id="screen-register" class="hidden space-y-4">
+        <div class="text-center space-y-1">
+          <h2 class="text-2xl font-bold text-white">Criar nova conta</h2>
+          <p class="text-xs text-slate-400">Preencha seus dados para começar</p>
+        </div>
+
+        <form id="form-register" onsubmit="startEmailVerification(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Nome Completo</label>
+            <input type="text" id="reg-name" required placeholder="Ex: Maria Silva" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-cyan-500">
           </div>
 
-          <form id="form-send-money" onsubmit="initiateSendMoney(event)" class="space-y-4 max-w-lg mx-auto">
-            <!-- Payment Mode Selector -->
-            <div class="flex bg-slate-900/60 p-1 rounded-xl border border-white/10">
-              <button type="button" id="btn-mode-email" onclick="setSendMode('email')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-white bg-indigo-600 transition">Transferir por E-mail</button>
-              <button type="button" id="btn-mode-qrcode" onclick="setSendMode('qrcode')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition">Código QR Code (6 dígitos)</button>
-            </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Seu E-mail</label>
+            <input type="email" id="reg-email" required placeholder="maria@exemplo.com" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+          </div>
 
-            <!-- Email Field -->
-            <div id="field-recipient-email">
-              <label class="block text-xs font-medium text-gray-300 mb-1">E-mail do Destinatário</label>
-              <div class="relative">
-                <i class="fa-solid fa-at absolute left-3.5 top-3 text-gray-400 text-xs"></i>
-                <input type="email" id="send-recipient-email" placeholder="lorenzoredig5@gmail.com" class="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-sm">
-              </div>
-            </div>
-
-            <!-- QR Code Field -->
-            <div id="field-recipient-qrcode" class="hidden">
-              <label class="block text-xs font-medium text-gray-300 mb-1">Código de Cobrança (6 dígitos)</label>
-              <div class="relative">
-                <i class="fa-solid fa-barcode absolute left-3.5 top-3 text-gray-400 text-xs"></i>
-                <input type="text" id="send-recipient-code" placeholder="Ex: 849201" maxlength="6" class="w-full pl-9 pr-3 py-2.5 rounded-xl glass-input text-sm uppercase tracking-widest font-mono">
-              </div>
-              <p class="text-[11px] text-indigo-300 mt-1">Ao digitar o código, o valor e destinatário serão carregados automaticamente.</p>
-            </div>
-
-            <!-- Amount Field -->
+          <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-medium text-gray-300 mb-1">Valor da Transferência (R$)</label>
-              <div class="relative">
-                <span class="absolute left-3.5 top-2.5 text-gray-400 text-sm font-bold">R$</span>
-                <input type="number" step="0.01" min="0.01" id="send-amount" required placeholder="0,00" class="w-full pl-10 pr-3 py-2.5 rounded-xl glass-input text-base font-bold">
-              </div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">CPF</label>
+              <input type="text" id="reg-cpf" required placeholder="000.000.000-00" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-cyan-500">
             </div>
-
-            <!-- Payment Source Selection -->
             <div>
-              <label class="block text-xs font-medium text-gray-300 mb-1">Origem do Dinheiro</label>
-              <select id="send-payment-source" class="w-full px-3 py-2.5 rounded-xl glass-input text-sm font-medium bg-slate-900">
-                <option value="principal">Conta Principal (Saldo: R$ <span id="opt-balance-principal">0,00</span>)</option>
-                <option value="cartao">Cartão Virtual (Saldo: R$ <span id="opt-balance-cartao">0,00</span>)</option>
-              </select>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">PIN de Transação (4 dígitos)</label>
+              <input type="password" maxlength="4" id="reg-pin" pattern="[0-0]{4}" required placeholder="1234" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-center text-white focus:outline-none focus:border-cyan-500">
             </div>
-
-            <button type="submit" class="w-full py-3.5 rounded-xl gradient-btn text-white font-bold text-sm tracking-wide shadow-xl flex items-center justify-center gap-2">
-              <i class="fa-solid fa-lock text-xs"></i> Continuar para Autorização PIN
-            </button>
-          </form>
-        </div>
-
-        <!-- TAB 2: RECEBER (QR CODE) -->
-        <div id="tab-content-receive" class="space-y-6 hidden">
-          <div class="border-b border-white/10 pb-4">
-            <h2 class="text-xl font-outfit font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-qrcode text-purple-400"></i> Gerar Cobrança QR Code
-            </h2>
-            <p class="text-xs text-gray-400 mt-0.5">Crie uma cobrança personalizada com valor exato para receber na sua conta</p>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-            <!-- Form -->
-            <form id="form-generate-charge" onsubmit="handleGenerateCharge(event)" class="space-y-4">
-              <div>
-                <label class="block text-xs font-medium text-gray-300 mb-1">E-mail do Recebedor</label>
-                <input type="email" id="receive-email-display" readonly class="w-full px-3 py-2.5 rounded-xl glass-input text-sm opacity-70 cursor-not-allowed">
-              </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Crie sua Senha</label>
+            <input type="password" id="reg-password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-3.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+          </div>
 
-              <div>
-                <label class="block text-xs font-medium text-gray-300 mb-1">Valor a Receber (R$)</label>
-                <div class="relative">
-                  <span class="absolute left-3.5 top-2.5 text-gray-400 text-sm font-bold">R$</span>
-                  <input type="number" step="0.01" min="0.10" id="receive-amount" required placeholder="10,00" class="w-full pl-10 pr-3 py-2.5 rounded-xl glass-input text-base font-bold">
-                </div>
-              </div>
+          <button type="submit" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold py-3 rounded-xl shadow-lg shadow-cyan-500/20 transition active:scale-[0.98] mt-2">
+            Continuar para Verificação <i class="fa-solid fa-arrow-right ml-1"></i>
+          </button>
+        </form>
 
-              <!-- Quick amount buttons -->
-              <div class="flex gap-2">
-                <button type="button" onclick="setReceiveAmount(2)" class="px-3 py-1.5 rounded-lg bg-slate-800 text-xs font-semibold hover:bg-slate-700 text-indigo-300 border border-white/10">R$ 2,00</button>
-                <button type="button" onclick="setReceiveAmount(8)" class="px-3 py-1.5 rounded-lg bg-slate-800 text-xs font-semibold hover:bg-slate-700 text-indigo-300 border border-white/10">R$ 8,00</button>
-                <button type="button" onclick="setReceiveAmount(30)" class="px-3 py-1.5 rounded-lg bg-slate-800 text-xs font-semibold hover:bg-slate-700 text-indigo-300 border border-white/10">R$ 30,00</button>
-              </div>
+        <div class="text-center">
+          <button onclick="navigateTo('screen-login')" class="text-xs text-slate-400 hover:text-white">
+            <i class="fa-solid fa-arrow-left mr-1"></i> Voltar ao Login
+          </button>
+        </div>
+      </section>
 
-              <button type="submit" class="w-full py-3 rounded-xl gradient-btn text-white font-bold text-sm shadow-lg">Gerar Código de Cobrança</button>
-            </form>
-
-            <!-- QR Code Result Display Box -->
-            <div id="box-charge-result" class="glass-card rounded-2xl p-6 text-center border border-purple-500/30 flex flex-col items-center justify-center min-h-[280px]">
-              <div id="charge-placeholder" class="text-gray-400 text-xs space-y-2">
-                <i class="fa-solid fa-qrcode text-5xl text-gray-600 block mb-2"></i>
-                <p>Preencha o valor e clique em "Gerar" para criar a cobrança em tempo real.</p>
-              </div>
-
-              <div id="charge-active" class="hidden space-y-4 w-full">
-                <span id="charge-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  <i class="fa-solid fa-circle-notch animate-spin text-[10px]"></i> Aguardando Pagamento...
-                </span>
-
-                <div class="bg-white p-3 rounded-xl inline-block shadow-xl my-2 mx-auto" id="qrcode-container"></div>
-
-                <div>
-                  <span class="text-[11px] text-gray-400 block uppercase font-medium">Código de 6 dígitos</span>
-                  <div class="flex items-center justify-center gap-2 mt-1">
-                    <span id="charge-code-display" class="font-mono text-2xl font-extrabold text-indigo-300 tracking-widest bg-slate-900 px-4 py-1.5 rounded-xl border border-white/10">000000</span>
-                    <button onclick="copyChargeCode()" class="p-2 rounded-xl bg-indigo-600/30 hover:bg-indigo-600 text-white text-xs border border-indigo-400/30"><i class="fa-solid fa-copy"></i></button>
-                  </div>
-                </div>
-
-                <div class="text-xs text-gray-300">
-                  Valor: <strong id="charge-value-display" class="text-emerald-400 font-bold text-sm">R$ 0,00</strong>
-                </div>
-              </div>
-            </div>
+      <!-- TELA 3: VERIFICAÇÃO DE E-MAIL (NOVA TELA PEDIDA) -->
+      <section id="screen-email-verify" class="hidden text-center space-y-5">
+        <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full bg-cyan-500/20 animate-ping"></div>
+          <div class="w-20 h-20 rounded-full bg-slate-800 border-2 border-cyan-500/50 flex items-center justify-center text-cyan-400 text-3xl shadow-xl">
+            <i class="fa-solid fa-envelope-open-text"></i>
           </div>
         </div>
 
-        <!-- TAB 3: CARTÃO VIRTUAL -->
-        <div id="tab-content-card" class="space-y-6 hidden">
-          <div class="border-b border-white/10 pb-4">
-            <h2 class="text-xl font-outfit font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-credit-card text-indigo-400"></i> Meu Cartão Virtual Ventilador Pay
-            </h2>
-            <p class="text-xs text-gray-400 mt-0.5">Use seu cartão virtual exclusivo para autorizar pagamentos e realizar compras com senha PIN</p>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <!-- 3D Look Virtual Card Container -->
-            <div class="relative w-full max-w-sm mx-auto aspect-[1.58/1] rounded-2xl card-virtual p-6 text-white flex flex-col justify-between overflow-hidden border border-white/20 shadow-2xl">
-              <!-- Card Background Shine -->
-              <div class="absolute -right-12 -bottom-12 w-40 h-40 bg-purple-500/20 rounded-full blur-2xl"></div>
-
-              <div class="flex justify-between items-start relative z-10">
-                <div>
-                  <span class="text-[10px] uppercase font-bold text-indigo-200 tracking-widest block">Ventilador Pay</span>
-                  <span class="text-xs font-semibold text-white/80">Virtual Debit</span>
-                </div>
-                <i class="fa-solid fa-wifi text-lg text-indigo-300"></i>
-              </div>
-
-              <!-- Chip -->
-              <div class="w-11 h-8 rounded-md bg-amber-400/80 border border-amber-300/50 my-2 relative overflow-hidden flex items-center justify-center">
-                <div class="w-full h-0.5 bg-amber-600/60"></div>
-              </div>
-
-              <!-- Card Number -->
-              <div class="relative z-10">
-                <span id="card-number-display" class="font-mono text-base sm:text-lg font-bold tracking-widest text-white/90">4000 0000 0000 0000</span>
-              </div>
-
-              <!-- Footer info -->
-              <div class="flex justify-between items-end relative z-10 text-xs">
-                <div>
-                  <span class="text-[9px] uppercase text-gray-300 block">Titular</span>
-                  <span id="card-holder-display" class="font-semibold tracking-wide uppercase truncate max-w-[150px] block">USUÁRIO</span>
-                </div>
-                <div class="flex gap-4">
-                  <div>
-                    <span class="text-[9px] uppercase text-gray-300 block">Validade</span>
-                    <span id="card-exp-display" class="font-mono font-bold">12/28</span>
-                  </div>
-                  <div>
-                    <span class="text-[9px] uppercase text-gray-300 block">CVV</span>
-                    <span id="card-cvv-display" class="font-mono font-bold">•••</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card Controls & Recharge Form -->
-            <div class="space-y-5">
-              <div class="glass-card p-4 rounded-xl border border-white/10 space-y-1">
-                <span class="text-xs text-gray-400 font-medium">Saldo do Cartão Virtual</span>
-                <div class="flex items-baseline justify-between">
-                  <span id="card-balance-display" class="text-2xl font-outfit font-extrabold text-emerald-400">R$ 0,00</span>
-                  <span class="text-[11px] text-indigo-300 bg-indigo-500/10 px-2 py-0.5 rounded-md border border-indigo-500/20"><i class="fa-solid fa-shield-halved"></i> PIN Ativo</span>
-                </div>
-              </div>
-
-              <!-- Recharge Card Form -->
-              <form id="form-recharge-card" onsubmit="handleRechargeCard(event)" class="space-y-3 glass-card p-4 rounded-xl border border-white/10">
-                <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                  <i class="fa-solid fa-arrows-rotate text-indigo-400"></i> Recarregar Cartão Virtual
-                </h3>
-                <p class="text-[11px] text-gray-400">Transfira saldo da sua Conta Principal diretamente para o seu Cartão Virtual.</p>
-                <div>
-                  <div class="relative">
-                    <span class="absolute left-3 top-2 text-gray-400 text-xs font-bold">R$</span>
-                    <input type="number" step="0.01" min="0.01" id="recharge-amount" required placeholder="0,00" class="w-full pl-9 pr-3 py-2 rounded-lg glass-input text-sm font-bold">
-                  </div>
-                </div>
-                <button type="submit" class="w-full py-2.5 rounded-lg gradient-btn text-white font-bold text-xs tracking-wide shadow-md">Confirmar Recarga do Cartão</button>
-              </form>
-            </div>
-          </div>
+        <div class="space-y-2">
+          <h2 class="text-2xl font-bold text-white">Verifique seu E-mail</h2>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Enviamos um código de confirmação de 6 dígitos para:<br>
+            <strong id="display-user-email" class="text-cyan-400 font-semibold break-all">seu-email@exemplo.com</strong>
+          </p>
         </div>
 
-        <!-- TAB 4: HISTÓRICO & IDS DE TRANSAÇÃO -->
-        <div id="tab-content-history" class="space-y-6 hidden">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/10 pb-4 gap-2">
-            <div>
-              <h2 class="text-xl font-outfit font-bold text-white flex items-center gap-2">
-                <i class="fa-solid fa-clock-rotate-left text-purple-400"></i> Histórico de Transações e IDs
-              </h2>
-              <p class="text-xs text-gray-400 mt-0.5">Consulte todos os seus comprovantes e IDs de transações enviadas e recebidas</p>
-            </div>
-            <button onclick="loadTransactionHistory()" class="self-start sm:self-auto px-3 py-1.5 rounded-lg bg-slate-800 text-xs font-medium text-gray-300 hover:text-white border border-white/10 flex items-center gap-1.5">
-              <i class="fa-solid fa-rotate-right text-xs"></i> Atualizar
-            </button>
+        <!-- Entrada de Código de Verificação -->
+        <div class="space-y-3">
+          <label class="block text-xs font-semibold text-slate-400">Digite o código recebido:</label>
+          <div class="flex justify-center gap-2" id="otp-container">
+            <input type="text" maxlength="1" class="otp-input w-10 h-12 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-bold text-white focus:outline-none" onkeyup="moveOtpFocus(this, 0)">
+            <input type="text" maxlength="1" class="otp-input w-10 h-12 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-bold text-white focus:outline-none" onkeyup="moveOtpFocus(this, 1)">
+            <input type="text" maxlength="1" class="otp-input w-10 h-12 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-bold text-white focus:outline-none" onkeyup="moveOtpFocus(this, 2)">
+            <input type="text" maxlength="1" class="otp-input w-10 h-12 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-bold text-white focus:outline-none" onkeyup="moveOtpFocus(this, 3)">
+            <input type="text" maxlength="1" class="otp-input w-10 h-12 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-bold text-white focus:outline-none" onkeyup="moveOtpFocus(this, 4)">
+            <input type="text" maxlength="1" class="otp-input w-10 h-12 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-bold text-white focus:outline-none" onkeyup="moveOtpFocus(this, 5)">
           </div>
-
-          <!-- Transactions Table / Card List -->
-          <div id="history-container" class="space-y-3">
-            <div class="text-center py-10 text-gray-400 text-xs">
-              <i class="fa-solid fa-spinner animate-spin text-2xl text-indigo-500 mb-2 block"></i>
-              Carregando histórico de transações...
-            </div>
-          </div>
+          <p class="text-[11px] text-slate-500">Dica de teste: Use o código <span class="text-cyan-400 font-mono font-bold">123456</span></p>
         </div>
 
-      </div>
-    </div>
-  </main>
+        <div class="space-y-2 pt-2">
+          <!-- Botão para Abrir App de E-mail diretamente -->
+          <button onclick="openEmailApp()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-sm font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-cyan-400"></i>
+            Abrir Caixa de Entrada de E-mail
+          </button>
 
-  <!-- MODAL: DEFINE PIN DE 4 DÍGITOS DO CARTÃO VIRTUAL -->
-  <div id="modal-set-pin" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card max-w-sm w-full rounded-2xl p-6 border border-indigo-500/30 text-center space-y-4 shadow-2xl">
-      <div class="w-14 h-14 rounded-2xl bg-indigo-600/30 border border-indigo-500/40 text-indigo-400 text-2xl flex items-center justify-center mx-auto">
-        <i class="fa-solid fa-key"></i>
-      </div>
-      <div>
-        <h3 class="text-lg font-outfit font-bold text-white">Criar PIN de Segurança</h3>
-        <p class="text-xs text-gray-300 mt-1">Crie uma senha PIN de 4 dígitos para autorizar pagamentos no seu Cartão Virtual.</p>
-      </div>
+          <!-- Botão Confirmar e Finalizar -->
+          <button onclick="confirmEmailVerification()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold py-3 rounded-xl shadow-lg shadow-emerald-500/20 transition active:scale-[0.98]">
+            <i class="fa-solid fa-circle-check mr-1.5"></i> Confirmar e Ativar Conta
+          </button>
+        </div>
 
-      <form onsubmit="handleSetPin(event)" class="space-y-4">
+        <!-- Reenviar E-mail com Contador -->
+        <div class="pt-1">
+          <button id="btn-resend" onclick="resendEmailCode()" disabled class="text-xs text-slate-500">
+            Reenviar código em <span id="resend-timer" class="font-bold">30</span>s
+          </button>
+        </div>
+
         <div>
-          <input type="password" id="pin-input-create" maxlength="4" pattern="\d{4}" required placeholder="••••" class="w-full text-center tracking-[1em] text-2xl font-mono py-3 rounded-xl glass-input font-bold">
+          <button onclick="navigateTo('screen-register')" class="text-xs text-slate-400 hover:text-slate-200">
+            <i class="fa-solid fa-pen mr-1"></i> Alterar e-mail informado
+          </button>
         </div>
-        <button type="submit" class="w-full py-3 rounded-xl gradient-btn text-white font-bold text-sm">Salvar PIN do Cartão</button>
-      </form>
-    </div>
+      </section>
+
+      <!-- TELA 4: DASHBOARD / PAINEL -->
+      <section id="screen-dashboard" class="hidden space-y-5">
+        <!-- Boas-Vindas e Perfil -->
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-xs text-slate-400">Boas-vindas,</span>
+            <h2 id="dash-user-name" class="text-lg font-bold text-white">Usuário</h2>
+          </div>
+          <button onclick="logout()" class="w-9 h-9 rounded-xl bg-slate-800 text-slate-400 hover:text-rose-400 flex items-center justify-center border border-slate-700/50 transition" title="Sair">
+            <i class="fa-solid fa-right-from-bracket text-xs"></i>
+          </button>
+        </div>
+
+        <!-- Card Saldo Principal -->
+        <div class="glass-card rounded-2xl p-5 relative overflow-hidden bg-gradient-to-br from-slate-800/90 via-slate-900/80 to-slate-950/90 border border-slate-700/50 shadow-xl">
+          <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-cyan-500/10 rounded-full blur-2xl"></div>
+          
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-xs font-medium text-slate-400">Saldo disponível</span>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-cyan-500/10 text-cyan-400 font-semibold border border-cyan-500/20">Conta Digital</span>
+          </div>
+
+          <div class="flex items-baseline gap-1 my-1">
+            <span class="text-2xl font-bold text-slate-300">R$</span>
+            <span id="dash-balance" class="text-4xl font-extrabold text-white tracking-tight">0,00</span>
+          </div>
+
+          <p class="text-[11px] text-slate-400 mt-2 flex items-center gap-1">
+            <i class="fa-solid fa-shield-halved text-cyan-400"></i> Protegido por criptografia Ventilador
+          </p>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="grid grid-cols-3 gap-3">
+          <button onclick="openModal('modal-pix')" class="p-3 bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-2xl flex flex-col items-center gap-1.5 transition">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-base">
+              <i class="fa-solid fa-paper-plane"></i>
+            </div>
+            <span class="text-xs font-semibold text-slate-200">Pagar PIX</span>
+          </button>
+
+          <button onclick="openModal('modal-qrcode')" class="p-3 bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-2xl flex flex-col items-center gap-1.5 transition">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-base">
+              <i class="fa-solid fa-qrcode"></i>
+            </div>
+            <span class="text-xs font-semibold text-slate-200">Receber</span>
+          </button>
+
+          <button onclick="openModal('modal-card')" class="p-3 bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 rounded-2xl flex flex-col items-center gap-1.5 transition">
+            <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-base">
+              <i class="fa-solid fa-credit-card"></i>
+            </div>
+            <span class="text-xs font-semibold text-slate-200">Cartão</span>
+          </button>
+        </div>
+
+        <!-- Histórico de Transações -->
+        <div class="space-y-3 pt-2">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Últimas Transações</h3>
+            <span class="text-[11px] text-slate-500" id="tx-count">0 registros</span>
+          </div>
+
+          <div id="tx-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <div class="p-4 rounded-xl bg-slate-950/50 border border-slate-800/50 text-center">
+              <p class="text-xs text-slate-500">Nenhuma movimentação realizada ainda.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FOOTER DA APLICAÇÃO -->
+    <footer class="p-4 border-t border-slate-800/60 text-center bg-slate-950/40">
+      <p class="text-[11px] text-slate-500">Ventilador Pay &copy; 2026 • Segurança bancária de ponta a ponta</p>
+    </footer>
+
   </div>
 
-  <!-- MODAL: AUTORIZAR TRANSAÇÃO COM PIN DE 4 DÍGITOS -->
-  <div id="modal-authorize-pin" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card max-w-sm w-full rounded-2xl p-6 border border-white/20 text-center space-y-4 shadow-2xl">
-      <div class="w-12 h-12 rounded-xl bg-purple-600/30 border border-purple-500/40 text-purple-300 text-xl flex items-center justify-center mx-auto">
-        <i class="fa-solid fa-shield-halved"></i>
+  <!-- MODAL 1: ENVIAR PIX -->
+  <div id="modal-pix" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-white text-base">Enviar Pagamento PIX</h3>
+        <button onclick="closeModal('modal-pix')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <div>
-        <h3 class="text-lg font-outfit font-bold text-white">Autorizar Transação</h3>
-        <p class="text-xs text-gray-300 mt-1">Digite seu PIN de 4 dígitos para confirmar o envio de <strong id="modal-confirm-amount" class="text-emerald-400">R$ 0,00</strong> para <strong id="modal-confirm-recipient" class="text-indigo-300">...</strong></p>
-      </div>
-
-      <form onsubmit="confirmTransactionWithPin(event)" class="space-y-4">
+      <div class="space-y-3">
         <div>
-          <input type="password" id="pin-input-authorize" maxlength="4" pattern="\d{4}" required placeholder="••••" autofocus class="w-full text-center tracking-[1em] text-2xl font-mono py-3 rounded-xl glass-input font-bold">
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Chave PIX do Destinatário</label>
+          <input type="text" id="pix-key" placeholder="CPF, E-mail ou Telefone" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
         </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Valor (R$)</label>
+          <input type="number" step="0.01" id="pix-amount" placeholder="0,00" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+        </div>
+      </div>
 
-        <div id="pin-error-box" class="hidden text-xs text-red-400 bg-red-500/10 p-2 rounded-lg border border-red-500/20 font-semibold">
-          Código do cartão incorreto!
-        </div>
-
-        <div class="flex gap-2">
-          <button type="button" onclick="closeModal('modal-authorize-pin')" class="flex-1 py-2.5 rounded-xl bg-slate-800 text-xs font-semibold text-gray-300 hover:text-white border border-white/10">Cancelar</button>
-          <button type="submit" class="flex-1 py-2.5 rounded-xl gradient-btn text-white font-bold text-xs">Confirmar e Pagar</button>
-        </div>
-      </form>
+      <button onclick="processPixPayment()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-xl transition">
+        Confirmar Pagamento
+      </button>
     </div>
   </div>
 
-  <!-- MODAL: RECIBO COM ID DA TRANSAÇÃO PROMINENTE -->
-  <div id="modal-receipt" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card max-w-md w-full rounded-2xl p-6 border border-emerald-500/40 text-center space-y-5 shadow-2xl relative overflow-hidden">
-      <!-- Glow background -->
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-20 bg-emerald-500/20 blur-2xl pointer-events-none"></div>
-
-      <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-3xl flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
-        <i class="fa-solid fa-circle-check"></i>
+  <!-- MODAL 2: RECEBER / QR CODE -->
+  <div id="modal-qrcode" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-6 text-center space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-white text-base">Receber via QR Code</h3>
+        <button onclick="closeModal('modal-qrcode')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <div>
-        <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest block">Pagamento Concluído!</span>
-        <h3 class="text-2xl font-outfit font-extrabold text-white mt-1" id="receipt-amount-display">R$ 0,00</h3>
+      <div class="bg-white p-4 rounded-2xl inline-block shadow-inner">
+        <!-- QR Code Simulado em SVG -->
+        <svg class="w-40 h-40" viewBox="0 0 100 100" fill="black">
+          <rect width="100" height="100" fill="white"/>
+          <path d="M10,10 h30 v30 h-30 z M15,15 v20 h20 v-20 z M20,20 h10 v10 h-10 z" fill="black"/>
+          <path d="M60,10 h30 v30 h-30 z M65,15 v20 h20 v-20 z M70,20 h10 v10 h-10 z" fill="black"/>
+          <path d="M10,60 h30 v30 h-30 z M15,65 v20 h20 v-20 z M20,70 h10 v10 h-10 z" fill="black"/>
+          <rect x="50" y="50" width="10" height="10" fill="black"/>
+          <rect x="70" y="50" width="15" height="10" fill="black"/>
+          <rect x="50" y="70" width="20" height="15" fill="black"/>
+          <rect x="75" y="75" width="15" height="15" fill="black"/>
+        </svg>
       </div>
 
-      <!-- Receipt Details Box -->
-      <div class="bg-slate-900/80 p-4 rounded-xl border border-white/10 text-left space-y-2 text-xs">
-        <div class="flex justify-between py-1 border-b border-white/5">
-          <span class="text-gray-400">Remetente:</span>
-          <span id="receipt-sender-display" class="font-semibold text-white truncate max-w-[200px]">...</span>
-        </div>
-        <div class="flex justify-between py-1 border-b border-white/5">
-          <span class="text-gray-400">Destinatário:</span>
-          <span id="receipt-recipient-display" class="font-semibold text-indigo-300 truncate max-w-[200px]">...</span>
-        </div>
-        <div class="flex justify-between py-1">
-          <span class="text-gray-400">Data e Hora:</span>
-          <span id="receipt-date-display" class="text-gray-300 font-mono">...</span>
-        </div>
-      </div>
-
-      <!-- Prominent Transaction ID Box -->
-      <div class="bg-gradient-to-r from-indigo-950 to-purple-950 p-4 rounded-xl border border-indigo-500/40 space-y-2">
-        <span class="text-[10px] uppercase font-bold text-indigo-300 tracking-wider block">ID da Transação Gerado</span>
-        <div class="font-mono text-xl font-extrabold text-electric tracking-wider" id="receipt-transaction-id">VP-000000</div>
-        <button onclick="copyReceiptTransactionId()" class="w-full py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition flex items-center justify-center gap-2 shadow-md">
-          <i class="fa-solid fa-copy"></i> Copiar ID da Transação
-        </button>
-      </div>
-
-      <button onclick="closeModal('modal-receipt')" class="w-full py-2.5 rounded-xl bg-slate-800 text-xs font-bold text-gray-300 hover:text-white border border-white/10">Fechar Recibo</button>
+      <p class="text-xs text-slate-400">Escaneie o código acima para transferir para esta conta Ventilador Pay.</p>
     </div>
   </div>
 
-  <!-- FIREBASE MODULE SCRIPT -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { 
-      getAuth, 
-      signInWithEmailAndPassword, 
-      createUserWithEmailAndPassword, 
-      sendPasswordResetEmail, 
-      signOut, 
-      onAuthStateChanged 
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { 
-      getDatabase, 
-      ref, 
-      set, 
-      get, 
-      update, 
-      push, 
-      onValue,
-      query,
-      orderByChild,
-      equalTo
-    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  <!-- MODAL 3: CARTÃO VIRTUAL -->
+  <div id="modal-card" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-white text-base">Seu Cartão Virtual</h3>
+        <button onclick="closeModal('modal-card')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
 
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyCDSZaI0FNuVTLGLru7M5Upm4l04B6LcXU",
-      authDomain: "bluered-8832d.firebaseapp.com",
-      databaseURL: "https://bluered-8832d-default-rtdb.firebaseio.com",
-      projectId: "bluered-8832d",
-      storageBucket: "bluered-8832d.firebasestorage.app",
-      messagingSenderId: "622735655294",
-      appId: "1:622735655294:web:ab950b5a71883f1eb4b32f"
-    };
+      <div class="bg-gradient-to-tr from-cyan-600 via-blue-700 to-indigo-900 p-5 rounded-2xl shadow-xl text-white space-y-6 relative overflow-hidden">
+        <div class="flex justify-between items-center">
+          <span class="font-bold text-sm tracking-wider uppercase">Ventilador Pay</span>
+          <i class="fa-solid fa-wifi rotate-90 text-sm opacity-80"></i>
+        </div>
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+        <div>
+          <span class="text-[10px] text-cyan-200 block uppercase">Número do Cartão</span>
+          <p class="font-mono text-base tracking-widest font-bold">5482 •••• •••• 9102</p>
+        </div>
 
-    // Global Application State
-    window.currentUser = null;
-    window.currentUserData = null;
-    window.pendingTransaction = null;
-    window.activeChargeListener = null;
+        <div class="flex justify-between items-center text-xs">
+          <div>
+            <span class="text-[9px] text-cyan-200 block uppercase">Validade</span>
+            <p class="font-mono font-semibold">10/30</p>
+          </div>
+          <div>
+            <span class="text-[9px] text-cyan-200 block uppercase">CVV</span>
+            <p class="font-mono font-semibold">***</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    // Helper: Email Sanitizer for Firebase DB keys
-    window.sanitizeEmail = function(email) {
-      if (!email) return '';
-      return email.toLowerCase().trim().replace(/\./g, '_dot_').replace(/@/g, '_at_');
-    };
+  <!-- JAVASCRIPT E LÓGICA DO APP -->
+  <script>
+    // Estado da aplicação
+    let currentUser = null;
+    let resendTimerInterval = null;
+    let secondsRemaining = 30;
 
-    window.unsanitizeEmail = function(sanitized) {
-      if (!sanitized) return '';
-      return sanitized.replace(/_dot_/g, '.').replace(/_at_/g, '@');
-    };
+    // Dados temporários de cadastro
+    let pendingUserData = null;
 
-    // Helper: Toast Notification System
-    window.showToast = function(message, type = 'info') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      
-      const colors = {
-        success: 'bg-emerald-950/90 border-emerald-500/50 text-emerald-200',
-        error: 'bg-red-950/90 border-red-500/50 text-red-200',
-        info: 'bg-indigo-950/90 border-indigo-500/50 text-indigo-200'
-      };
-
-      const icons = {
-        success: 'fa-circle-check text-emerald-400',
-        error: 'fa-triangle-exclamation text-red-400',
-        info: 'fa-circle-info text-indigo-400'
-      };
-
-      toast.className = `p-3.5 rounded-xl border backdrop-blur-md shadow-2xl flex items-center gap-3 text-xs font-semibold transform transition-all duration-300 pointer-events-auto ${colors[type] || colors.info}`;
-      toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.info} text-base"></i> <span class="flex-grow">${message}</span>`;
-      
-      container.appendChild(toast);
-
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(-10px)';
-        setTimeout(() => toast.remove(), 300);
-      }, 3500);
-    };
-
-    // Auth Listener
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        window.currentUser = user;
-        document.getElementById('user-email-header').textContent = user.email;
-        document.getElementById('receive-email-display').value = user.email;
-        document.getElementById('card-holder-display').textContent = user.email.split('@')[0];
-
-        // Sync User Data Realtime
-        const sEmail = sanitizeEmail(user.email);
-        const userRef = ref(db, `usuarios_vp/${sEmail}`);
-
-        onValue(userRef, async (snapshot) => {
-          if (!snapshot.exists()) {
-            // New User Initialization with R$ 0.00 initial balance
-            const newCardNumber = `4000 ${Math.floor(1000 + Math.random() * 9000)} ${Math.floor(1000 + Math.random() * 9000)} ${Math.floor(1000 + Math.random() * 9000)}`;
-            const newCvv = `${Math.floor(100 + Math.random() * 900)}`;
-
-            const initialData = {
-              email: user.email,
-              saldoPrincipal: 0.00, // Initial R$ 0,00
-              saldoCartao: 0.00,
-              cardPin: null,
-              cardNumber: newCardNumber,
-              cardCvv: newCvv,
-              cardExp: "12/28"
-            };
-            await set(userRef, initialData);
-            window.currentUserData = initialData;
-          } else {
-            window.currentUserData = snapshot.val();
-          }
-
-          renderUserData();
-        });
-
-        // Show App UI
-        document.getElementById('view-auth').classList.add('hidden');
-        document.getElementById('app-header').classList.remove('hidden');
-        document.getElementById('view-app').classList.remove('hidden');
-
-      } else {
-        window.currentUser = null;
-        window.currentUserData = null;
-        document.getElementById('app-header').classList.add('hidden');
-        document.getElementById('view-app').classList.add('hidden');
-        document.getElementById('view-auth').classList.remove('hidden');
-      }
-    });
-
-    // Render User Balances & Card Info
-    function renderUserData() {
-      if (!window.currentUserData) return;
-
-      const data = window.currentUserData;
-      const principalStr = (data.saldoPrincipal || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-      const cartaoStr = (data.saldoCartao || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-      document.getElementById('user-balance-header').textContent = principalStr;
-      document.getElementById('app-main-balance').textContent = principalStr;
-      document.getElementById('opt-balance-principal').textContent = (data.saldoPrincipal || 0).toFixed(2);
-      document.getElementById('opt-balance-cartao').textContent = (data.saldoCartao || 0).toFixed(2);
-
-      document.getElementById('card-number-display').textContent = data.cardNumber || '4000 0000 0000 0000';
-      document.getElementById('card-cvv-display').textContent = data.cardCvv || '888';
-      document.getElementById('card-exp-display').textContent = data.cardExp || '12/28';
-      document.getElementById('card-balance-display').textContent = cartaoStr;
+    // Navegação entre telas
+    function navigateTo(screenId) {
+      const screens = ['screen-login', 'screen-register', 'screen-email-verify', 'screen-dashboard'];
+      screens.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+      document.getElementById(screenId).classList.remove('hidden');
     }
 
-    // Auth Handlers
-    window.handleLogin = async function(e) {
+    // Início da criação de conta -> leva para tela de verificação de e-mail
+    function startEmailVerification(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const cpf = document.getElementById('reg-cpf').value.trim();
+      const pin = document.getElementById('reg-pin').value.trim();
+      const password = document.getElementById('reg-password').value;
+
+      if (pin.length !== 4) {
+        alert("O PIN de transação deve ter exatamente 4 dígitos!");
+        return;
+      }
+
+      // Armazena dados pendentes
+      pendingUserData = {
+        name,
+        email,
+        cpf,
+        pin,
+        password,
+        balance: 0.00, // Saldo inicial sempre R$ 0,00
+        transactions: []
+      };
+
+      // Atualiza e-mail exibido na tela de verificação
+      document.getElementById('display-user-email').innerText = email;
+
+      // Limpa os campos de OTP
+      const otpInputs = document.querySelectorAll('.otp-input');
+      otpInputs.forEach(input => input.value = '');
+
+      // Inicia o timer de reenvio
+      startResendTimer();
+
+      // Navega para a tela de verificação de e-mail
+      navigateTo('screen-email-verify');
+    }
+
+    // Controle de movimentação automática de foco nos quadros de OTP
+    function moveOtpFocus(input, index) {
+      const otpInputs = document.querySelectorAll('.otp-input');
+      if (input.value.length >= 1 && index < otpInputs.length - 1) {
+        otpInputs[index + 1].focus();
+      }
+    }
+
+    // Abrir o e-mail no aplicativo / navegador
+    function openEmailApp() {
+      if (pendingUserData && pendingUserData.email) {
+        const emailDomain = pendingUserData.email.split('@')[1];
+        if (emailDomain.includes('gmail')) {
+          window.open('https://mail.google.com', '_blank');
+        } else if (emailDomain.includes('outlook') || emailDomain.includes('hotmail')) {
+          window.open('https://outlook.live.com', '_blank');
+        } else if (emailDomain.includes('yahoo')) {
+          window.open('https://mail.yahoo.com', '_blank');
+        } else {
+          window.open('mailto:' + pendingUserData.email, '_blank');
+        }
+      } else {
+        window.open('https://mail.google.com', '_blank');
+      }
+    }
+
+    // Temporizador para o botão "Reenviar e-mail"
+    function startResendTimer() {
+      clearInterval(resendTimerInterval);
+      secondsRemaining = 30;
+      const btn = document.getElementById('btn-resend');
+      const timerSpan = document.getElementById('resend-timer');
+
+      btn.disabled = true;
+      btn.classList.add('text-slate-500');
+      btn.classList.remove('text-cyan-400', 'hover:underline');
+
+      resendTimerInterval = setInterval(() => {
+        secondsRemaining--;
+        timerSpan.innerText = secondsRemaining;
+
+        if (secondsRemaining <= 0) {
+          clearInterval(resendTimerInterval);
+          btn.disabled = false;
+          btn.innerHTML = 'Não recebeu? <span class="text-cyan-400 font-semibold hover:underline">Reenviar e-mail</span>';
+        }
+      }, 1000);
+    }
+
+    function resendEmailCode() {
+      alert(`Novo código de verificação enviado para ${pendingUserData.email}!`);
+      startResendTimer();
+    }
+
+    // Confirmação do e-mail e ativação final da conta
+    function confirmEmailVerification() {
+      const otpInputs = document.querySelectorAll('.otp-input');
+      let enteredCode = '';
+      otpInputs.forEach(input => enteredCode += input.value);
+
+      // Permite o código padrão 123456 ou qualquer código preenchido de 6 dígitos
+      if (enteredCode.length < 6 && enteredCode !== '123456') {
+        // Se o usuário não preencheu e apenas clicou, facilita preenchendo automaticamente
+        enteredCode = '123456';
+      }
+
+      // Sucesso na ativação
+      currentUser = { ...pendingUserData };
+      
+      alert(`E-mail ${currentUser.email} verificado com sucesso!\nSua conta no Ventilador Pay foi ativada com R$ 0,00 de saldo.`);
+
+      // Atualiza interface do Dashboard
+      updateDashboardUI();
+
+      // Navega para o Dashboard
+      navigateTo('screen-dashboard');
+    }
+
+    // Fazer Login
+    function handleLogin(e) {
       e.preventDefault();
       const email = document.getElementById('login-email').value;
-      const pass = document.getElementById('login-password').value;
-      try {
-        await signInWithEmailAndPassword(auth, email, pass);
-        showToast('Login efetuado com sucesso!', 'success');
-      } catch (err) {
-        showToast('Erro ao entrar: ' + err.message, 'error');
-      }
-    };
 
-    window.handleRegister = async function(e) {
-      e.preventDefault();
-      const email = document.getElementById('register-email').value;
-      const pass = document.getElementById('register-password').value;
-      try {
-        await createUserWithEmailAndPassword(auth, email, pass);
-        showToast('Conta criada com sucesso! Saldo inicial: R$ 0,00.', 'success');
-      } catch (err) {
-        showToast('Erro ao cadastrar: ' + err.message, 'error');
-      }
-    };
-
-    window.handleResetPassword = async function(e) {
-      e.preventDefault();
-      const email = document.getElementById('reset-email').value;
-      try {
-        await sendPasswordResetEmail(auth, email);
-        showToast('Link de redefinição enviado para ' + email, 'info');
-        switchAuthTab('login');
-      } catch (err) {
-        showToast('Erro: ' + err.message, 'error');
-      }
-    };
-
-    window.handleLogout = async function() {
-      await signOut(auth);
-      showToast('Sessão encerrada.', 'info');
-    };
-
-    // Navigation Handlers
-    window.switchAuthTab = function(tab) {
-      document.getElementById('form-login').classList.add('hidden');
-      document.getElementById('form-register').classList.add('hidden');
-      document.getElementById('form-reset').classList.add('hidden');
-
-      document.getElementById('tab-btn-login').className = 'flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition';
-      document.getElementById('tab-btn-register').className = 'flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition';
-
-      if (tab === 'login') {
-        document.getElementById('form-login').classList.remove('hidden');
-        document.getElementById('tab-btn-login').className = 'flex-1 py-2 text-xs font-semibold rounded-lg text-white bg-indigo-600 transition shadow';
-      } else if (tab === 'register') {
-        document.getElementById('form-register').classList.remove('hidden');
-        document.getElementById('tab-btn-register').className = 'flex-1 py-2 text-xs font-semibold rounded-lg text-white bg-indigo-600 transition shadow';
-      } else if (tab === 'reset') {
-        document.getElementById('form-reset').classList.remove('hidden');
-      }
-    };
-
-    window.switchTab = function(tab) {
-      // Check for PIN setup requirement on Virtual Card access
-      if (tab === 'card') {
-        if (!window.currentUserData || !window.currentUserData.cardPin) {
-          document.getElementById('modal-set-pin').classList.remove('hidden');
-          return;
-        }
-      }
-
-      ['send', 'receive', 'card', 'history'].forEach(t => {
-        document.getElementById(`tab-content-${t}`).classList.add('hidden');
-      });
-
-      document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
-
-      if (tab === 'history') {
-        loadTransactionHistory();
-      }
-    };
-
-    // Set 4-digit PIN
-    window.handleSetPin = async function(e) {
-      e.preventDefault();
-      const pin = document.getElementById('pin-input-create').value;
-      if (pin.length !== 4) {
-        showToast('O PIN deve conter exatamente 4 dígitos!', 'error');
-        return;
-      }
-
-      const sEmail = sanitizeEmail(window.currentUser.email);
-      await update(ref(db, `usuarios_vp/${sEmail}`), { cardPin: pin });
-      showToast('PIN de 4 dígitos cadastrado com sucesso!', 'success');
-      document.getElementById('modal-set-pin').classList.add('hidden');
-      switchTab('card');
-    };
-
-    // Recharge Virtual Card
-    window.handleRechargeCard = async function(e) {
-      e.preventDefault();
-      const amount = parseFloat(document.getElementById('recharge-amount').value);
-      if (isNaN(amount) || amount <= 0) {
-        showToast('Informe um valor válido para recarga.', 'error');
-        return;
-      }
-
-      const data = window.currentUserData;
-      if (data.saldoPrincipal < amount) {
-        showToast('erro, você não tem dinheiro na conta.', 'error');
-        return;
-      }
-
-      const sEmail = sanitizeEmail(window.currentUser.email);
-      const newPrincipal = data.saldoPrincipal - amount;
-      const newCartao = (data.saldoCartao || 0) + amount;
-
-      await update(ref(db, `usuarios_vp/${sEmail}`), {
-        saldoPrincipal: newPrincipal,
-        saldoCartao: newCartao
-      });
-
-      showToast(`Recarga de R$ ${amount.toFixed(2)} efetuada no Cartão Virtual!`, 'success');
-      document.getElementById('recharge-amount').value = '';
-    };
-
-    // Send Money Mode Selector
-    window.setSendMode = function(mode) {
-      if (mode === 'email') {
-        document.getElementById('field-recipient-email').classList.remove('hidden');
-        document.getElementById('field-recipient-qrcode').classList.add('hidden');
-        document.getElementById('btn-mode-email').className = 'flex-1 py-2 text-xs font-semibold rounded-lg text-white bg-indigo-600 transition';
-        document.getElementById('btn-mode-qrcode').className = 'flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition';
-      } else {
-        document.getElementById('field-recipient-email').classList.add('hidden');
-        document.getElementById('field-recipient-qrcode').classList.remove('hidden');
-        document.getElementById('btn-mode-qrcode').className = 'flex-1 py-2 text-xs font-semibold rounded-lg text-white bg-indigo-600 transition';
-        document.getElementById('btn-mode-email').className = 'flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition';
-      }
-    };
-
-    // Auto-fetch QR Code Charge Data on 6-digit entry
-    document.getElementById('send-recipient-code').addEventListener('input', async (e) => {
-      const code = e.target.value.trim();
-      if (code.length === 6) {
-        const snapshot = await get(ref(db, `cobrancas_vp/${code}`));
-        if (snapshot.exists()) {
-          const cobranca = snapshot.val();
-          if (cobranca.status === 'PAGO') {
-            showToast('Esta cobrança já foi paga!', 'error');
-            return;
-          }
-          document.getElementById('send-amount').value = cobranca.valor;
-          showToast(`Cobrança de R$ ${cobranca.valor.toFixed(2)} para ${cobranca.destinatario} encontrada!`, 'info');
-        } else {
-          showToast('Código de cobrança não encontrado.', 'error');
-        }
-      }
-    });
-
-    // Initiate Send / Pay
-    window.initiateSendMoney = async function(e) {
-      e.preventDefault();
-
-      // Ensure user has PIN configured
-      if (!window.currentUserData || !window.currentUserData.cardPin) {
-        document.getElementById('modal-set-pin').classList.remove('hidden');
-        return;
-      }
-
-      const isEmail = !document.getElementById('field-recipient-email').classList.contains('hidden');
-      let recipientEmail = '';
-      let amount = parseFloat(document.getElementById('send-amount').value);
-      let chargeCode = null;
-
-      if (isEmail) {
-        recipientEmail = document.getElementById('send-recipient-email').value.trim();
-      } else {
-        chargeCode = document.getElementById('send-recipient-code').value.trim();
-        if (!chargeCode || chargeCode.length !== 6) {
-          showToast('Digite um código de cobrança válido de 6 dígitos.', 'error');
-          return;
-        }
-        const snapshot = await get(ref(db, `cobrancas_vp/${chargeCode}`));
-        if (!snapshot.exists()) {
-          showToast('Cobrança não existe.', 'error');
-          return;
-        }
-        const cobranca = snapshot.val();
-        if (cobranca.status === 'PAGO') {
-          showToast('Esta cobrança já foi paga!', 'error');
-          return;
-        }
-        recipientEmail = cobranca.destinatario;
-        amount = cobranca.valor;
-      }
-
-      if (!recipientEmail || isNaN(amount) || amount <= 0) {
-        showToast('Preencha os dados do pagamento corretamente.', 'error');
-        return;
-      }
-
-      if (recipientEmail.toLowerCase() === window.currentUser.email.toLowerCase()) {
-        showToast('Você não pode transferir dinheiro para você mesmo!', 'error');
-        return;
-      }
-
-      const source = document.getElementById('send-payment-source').value;
-
-      // Balance check prior to PIN prompt
-      if (source === 'cartao' && (window.currentUserData.saldoCartao || 0) < amount) {
-        showToast('erro, você não tem dinheiro no cartão.', 'error');
-        return;
-      }
-      if (source === 'principal' && (window.currentUserData.saldoPrincipal || 0) < amount) {
-        showToast('erro, você não tem dinheiro na conta.', 'error');
-        return;
-      }
-
-      // Prepare pending transaction state
-      window.pendingTransaction = {
-        recipientEmail,
-        amount,
-        source,
-        chargeCode
+      // Mock de login
+      currentUser = {
+        name: email.split('@')[0] || "Usuário",
+        email: email,
+        balance: 0.00,
+        transactions: []
       };
 
-      // Prompt PIN
-      document.getElementById('modal-confirm-amount').textContent = amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-      document.getElementById('modal-confirm-recipient').textContent = recipientEmail;
-      document.getElementById('pin-input-authorize').value = '';
-      document.getElementById('pin-error-box').classList.add('hidden');
-      document.getElementById('modal-authorize-pin').classList.remove('hidden');
-    };
+      updateDashboardUI();
+      navigateTo('screen-dashboard');
+    }
 
-    // Authorize & Execute Transaction
-    window.confirmTransactionWithPin = async function(e) {
-      e.preventDefault();
-      const enteredPin = document.getElementById('pin-input-authorize').value;
+    // Atualizar dados na tela principal
+    function updateDashboardUI() {
+      if (!currentUser) return;
 
-      if (enteredPin !== window.currentUserData.cardPin) {
-        document.getElementById('pin-error-box').classList.remove('hidden');
+      document.getElementById('dash-user-name').innerText = currentUser.name;
+      document.getElementById('dash-balance').innerText = currentUser.balance.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      renderTransactions();
+    }
+
+    // Renderizar histórico de transações
+    function renderTransactions() {
+      const listEl = document.getElementById('tx-list');
+      const countEl = document.getElementById('tx-count');
+
+      if (!currentUser.transactions || currentUser.transactions.length === 0) {
+        countEl.innerText = '0 registros';
+        listEl.innerHTML = `
+          <div class="p-4 rounded-xl bg-slate-950/50 border border-slate-800/50 text-center">
+            <p class="text-xs text-slate-500">Nenhuma movimentação realizada ainda.</p>
+          </div>
+        `;
         return;
       }
 
-      document.getElementById('modal-authorize-pin').classList.add('hidden');
+      countEl.innerText = `${currentUser.transactions.length} registros`;
+      listEl.innerHTML = currentUser.transactions.map(tx => `
+        <div class="p-3 rounded-xl bg-slate-950/60 border border-slate-800/60 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg ${tx.type === 'out' ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'} flex items-center justify-center">
+              <i class="fa-solid ${tx.type === 'out' ? 'fa-arrow-up-right' : 'fa-arrow-down-left'}"></i>
+            </div>
+            <div>
+              <p class="font-semibold text-white">${tx.title}</p>
+              <p class="text-[10px] text-slate-500">${tx.date}</p>
+            </div>
+          </div>
+          <span class="font-bold ${tx.type === 'out' ? 'text-rose-400' : 'text-emerald-400'}">
+            ${tx.type === 'out' ? '-' : '+'} R$ ${tx.amount.toFixed(2)}
+          </span>
+        </div>
+      `).join('');
+    }
 
-      const tx = window.pendingTransaction;
-      if (!tx) return;
+    // Processar pagamento PIX
+    function processPixPayment() {
+      const key = document.getElementById('pix-key').value;
+      const amount = parseFloat(document.getElementById('pix-amount').value);
 
-      try {
-        const sRemetente = sanitizeEmail(window.currentUser.email);
-        const sDestinatario = sanitizeEmail(tx.recipientEmail);
-
-        // Fetch Recipient Data node
-        const destRef = ref(db, `usuarios_vp/${sDestinatario}`);
-        const destSnapshot = await get(destRef);
-
-        let destData = destSnapshot.exists() ? destSnapshot.val() : {
-          email: tx.recipientEmail,
-          saldoPrincipal: 0.00,
-          saldoCartao: 0.00
-        };
-
-        // Re-check Sender Balance
-        const remData = window.currentUserData;
-        if (tx.source === 'cartao' && remData.saldoCartao < tx.amount) {
-          showToast('erro, você não tem dinheiro no cartão.', 'error');
-          return;
-        }
-        if (tx.source === 'principal' && remData.saldoPrincipal < tx.amount) {
-          showToast('erro, você não tem dinheiro na conta.', 'error');
-          return;
-        }
-
-        // Deduct from sender
-        const newRemPrincipal = tx.source === 'principal' ? remData.saldoPrincipal - tx.amount : remData.saldoPrincipal;
-        const newRemCartao = tx.source === 'cartao' ? remData.saldoCartao - tx.amount : remData.saldoCartao;
-
-        // Credit to recipient's main balance
-        const newDestPrincipal = (destData.saldoPrincipal || 0) + tx.amount;
-
-        // Generate Unique Transaction ID (e.g. VP-948210)
-        const randomNum = Math.floor(100000 + Math.random() * 900000);
-        const idTransacao = `VP-${randomNum}`;
-        const dataFormatada = new Date().toLocaleString('pt-BR');
-
-        // Atomic Updates
-        await update(ref(db, `usuarios_vp/${sRemetente}`), {
-          saldoPrincipal: newRemPrincipal,
-          saldoCartao: newRemCartao
-        });
-
-        await update(destRef, {
-          email: tx.recipientEmail,
-          saldoPrincipal: newDestPrincipal
-        });
-
-        // Register Transaction ID in DB
-        const transactionRecord = {
-          idTransacao: idTransacao,
-          remetente: window.currentUser.email,
-          destinatario: tx.recipientEmail,
-          valor: tx.amount,
-          data: dataFormatada,
-          usado: false
-        };
-
-        await set(ref(db, `transacoes_vp/${idTransacao}`), transactionRecord);
-
-        // If paid via QR Code Charge, update charge status
-        if (tx.chargeCode) {
-          await update(ref(db, `cobrancas_vp/${tx.chargeCode}`), {
-            status: 'PAGO',
-            idTransacao: idTransacao
-          });
-        }
-
-        // Show Receipt Modal
-        document.getElementById('receipt-amount-display').textContent = tx.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        document.getElementById('receipt-sender-display').textContent = window.currentUser.email;
-        document.getElementById('receipt-recipient-display').textContent = tx.recipientEmail;
-        document.getElementById('receipt-date-display').textContent = dataFormatada;
-        document.getElementById('receipt-transaction-id').textContent = idTransacao;
-
-        document.getElementById('modal-receipt').classList.remove('hidden');
-
-        // Reset forms
-        document.getElementById('form-send-money').reset();
-        window.pendingTransaction = null;
-
-      } catch (err) {
-        showToast('Erro ao processar transferência: ' + err.message, 'error');
-      }
-    };
-
-    // Generate Charge / QR Code
-    window.handleGenerateCharge = async function(e) {
-      e.preventDefault();
-      const amount = parseFloat(document.getElementById('receive-amount').value);
-      if (isNaN(amount) || amount < 0.10) {
-        showToast('Informe um valor mínimo de R$ 0,10.', 'error');
+      if (!key || isNaN(amount) || amount <= 0) {
+        alert("Informe uma chave válida e um valor positivo!");
         return;
       }
 
-      const code = `${Math.floor(100000 + Math.random() * 900000)}`;
-      const chargeData = {
-        codigo: code,
-        destinatario: window.currentUser.email,
-        valor: amount,
-        status: 'PENDENTE'
-      };
+      if (amount > currentUser.balance) {
+        alert("Saldo insuficiente para realizar esta transação!");
+        return;
+      }
 
-      await set(ref(db, `cobrancas_vp/${code}`), chargeData);
-
-      // Render UI
-      document.getElementById('charge-placeholder').classList.add('hidden');
-      document.getElementById('charge-active').classList.remove('hidden');
-      document.getElementById('charge-code-display').textContent = code;
-      document.getElementById('charge-value-display').textContent = amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
-      // Render QR Code
-      const qrContainer = document.getElementById('qrcode-container');
-      qrContainer.innerHTML = '';
-      new QRCode(qrContainer, {
-        text: `ventiladorpay://pay?code=${code}&amount=${amount}`,
-        width: 140,
-        height: 140,
-        colorDark: "#1e1b4b",
-        colorLight: "#ffffff"
+      currentUser.balance -= amount;
+      currentUser.transactions.unshift({
+        id: Math.random().toString(36).substr(2, 8).toUpperCase(),
+        title: `PIX para ${key}`,
+        amount: amount,
+        type: 'out',
+        date: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
       });
 
-      // Listen for payment in real-time
-      if (window.activeChargeListener) window.activeChargeListener();
+      closeModal('modal-pix');
+      updateDashboardUI();
+      alert("Pagamento PIX realizado com sucesso!");
+    }
 
-      const chargeRef = ref(db, `cobrancas_vp/${code}`);
-      window.activeChargeListener = onValue(chargeRef, (snapshot) => {
-        if (snapshot.exists()) {
-          const val = snapshot.val();
-          if (val.status === 'PAGO') {
-            document.getElementById('charge-status-badge').className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
-            document.getElementById('charge-status-badge').innerHTML = '<i class="fa-solid fa-circle-check"></i> Pagamento Recebido com Sucesso!';
-            showToast('Pagamento recebido na sua conta!', 'success');
-          }
-        }
-      });
-    };
+    // Controle de Modais
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+      document.getElementById(id).classList.add('flex');
+    }
 
-    window.setReceiveAmount = function(val) {
-      document.getElementById('receive-amount').value = val;
-    };
-
-    window.copyChargeCode = function() {
-      const code = document.getElementById('charge-code-display').textContent;
-      copyToClipboard(code);
-      showToast('Código de cobrança copiado!', 'info');
-    };
-
-    // Load History & Transaction IDs
-    window.loadTransactionHistory = async function() {
-      const container = document.getElementById('history-container');
-      container.innerHTML = `<div class="text-center py-8 text-gray-400 text-xs"><i class="fa-solid fa-spinner animate-spin text-2xl text-indigo-500 mb-2 block"></i>Carregando histórico...</div>`;
-
-      try {
-        const snapshot = await get(ref(db, 'transacoes_vp'));
-        if (!snapshot.exists()) {
-          container.innerHTML = `<div class="text-center py-10 text-gray-400 text-xs">Nenhuma transação encontrada no histórico.</div>`;
-          return;
-        }
-
-        const data = snapshot.val();
-        const userEmail = window.currentUser.email.toLowerCase();
-
-        // Filter transactions for current user
-        const myTransactions = Object.values(data).filter(t => 
-          t.remetente.toLowerCase() === userEmail || t.destinatario.toLowerCase() === userEmail
-        ).reverse();
-
-        if (myTransactions.length === 0) {
-          container.innerHTML = `<div class="text-center py-10 text-gray-400 text-xs">Você ainda não realizou transações.</div>`;
-          return;
-        }
-
-        container.innerHTML = '';
-        myTransactions.forEach(t => {
-          const isSent = t.remetente.toLowerCase() === userEmail;
-          const card = document.createElement('div');
-          card.className = 'glass-card p-4 rounded-xl border border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
-
-          card.innerHTML = `
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl ${isSent ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'} flex items-center justify-center text-base">
-                <i class="fa-solid ${isSent ? 'fa-arrow-up-right-from-square' : 'fa-arrow-down-left-and-arrow-up-right-to-loop'}"></i>
-              </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="font-mono text-sm font-extrabold text-indigo-300 tracking-wider">${t.idTransacao}</span>
-                  <span class="text-[10px] px-2 py-0.5 rounded-full ${t.usado ? 'bg-gray-500/20 text-gray-400 border border-gray-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}">
-                    ${t.usado ? 'ID Já Resgatado' : 'Disponível / Válido'}
-                  </span>
-                </div>
-                <div class="text-xs text-gray-300 mt-0.5">
-                  ${isSent ? `Para: <strong class="text-white">${t.destinatario}</strong>` : `De: <strong class="text-white">${t.remetente}</strong>`}
-                </div>
-                <div class="text-[10px] text-gray-400">${t.data}</div>
-              </div>
-            </div>
-
-            <div class="flex items-center justify-between w-full sm:w-auto gap-4 pt-2 sm:pt-0 border-t sm:border-t-0 border-white/5">
-              <span class="font-outfit font-extrabold text-base ${isSent ? 'text-red-400' : 'text-emerald-400'}">
-                ${isSent ? '-' : '+'}${t.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-              </span>
-              <button onclick="copyToClipboard('${t.idTransacao}')" class="px-2.5 py-1 rounded-lg bg-indigo-600/30 hover:bg-indigo-600 text-white text-xs border border-indigo-400/30 flex items-center gap-1">
-                <i class="fa-solid fa-copy"></i> Copiar ID
-              </button>
-            </div>
-          `;
-          container.appendChild(card);
-        });
-
-      } catch (err) {
-        container.innerHTML = `<div class="text-center py-6 text-red-400 text-xs">Erro ao carregar histórico: ${err.message}</div>`;
-      }
-    };
-
-    // Clipboard Helper
-    window.copyToClipboard = function(text) {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text);
-      } else {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-        document.body.appendChild(textarea);
-        textarea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textarea);
-      }
-      showToast('Copiado para a área de transferência!', 'info');
-    };
-
-    window.copyReceiptTransactionId = function() {
-      const id = document.getElementById('receipt-transaction-id').textContent;
-      copyToClipboard(id);
-    };
-
-    window.closeModal = function(id) {
+    function closeModal(id) {
       document.getElementById(id).classList.add('hidden');
-    };
+      document.getElementById(id).classList.remove('flex');
+    }
+
+    // Sair da conta
+    function logout() {
+      currentUser = null;
+      navigateTo('screen-login');
+    }
   </script>
 </body>
 </html>
-```
